@@ -8,6 +8,10 @@ void Ground::Update()
 {
 }
 
+void Ground::PostUpdate()
+{
+}
+
 void Ground::DrawLit()
 {
 }
