@@ -85,9 +85,6 @@
     <Filter Include="Src\Application\Object\BackGround">
       <UniqueIdentifier>{501f9ee3-7413-4aec-8e0f-e51b068e6ccf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Object\Title">
-      <UniqueIdentifier>{4fb936f2-8952-413a-9b38-2859f304910b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -270,9 +267,6 @@
     <ClInclude Include="Src\Application\Object\BackGround\NomalBack.h">
       <Filter>Src\Application\Object\BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Object\Title\TitleClick.h">
-      <Filter>Src\Application\Object\Title</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -424,9 +418,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Object\BackGround\NomalBack.cpp">
       <Filter>Src\Application\Object\BackGround</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Object\Title\TitleClick.cpp">
-      <Filter>Src\Application\Object\Title</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
