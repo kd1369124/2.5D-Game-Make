@@ -85,6 +85,9 @@
     <Filter Include="Src\Application\Object\BackGround">
       <UniqueIdentifier>{501f9ee3-7413-4aec-8e0f-e51b068e6ccf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Object\Enemy">
+      <UniqueIdentifier>{1cf41271-6e1f-4b8f-8514-440847e2ce6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -267,6 +270,9 @@
     <ClInclude Include="Src\Application\Object\BackGround\NomalBack.h">
       <Filter>Src\Application\Object\BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\Enemy.h">
+      <Filter>Src\Application\Object\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -418,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Object\BackGround\NomalBack.cpp">
       <Filter>Src\Application\Object\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\Enemy.cpp">
+      <Filter>Src\Application\Object\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
