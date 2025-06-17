@@ -11,7 +11,15 @@ public:
 	void PostUpdate()override;
 
 	void DrawLit()override;
+
+	void SetPos(const Math::Vector3& pos)
+	{
+		m_pos = pos;
+	}
 private:
 
+	std::shared_ptr<KdModelData> m_model;
+
+	Math::Vector3 m_pos = Math::Vector3::Zero;
 
 };

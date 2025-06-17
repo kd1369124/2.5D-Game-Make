@@ -85,6 +85,21 @@
     <Filter Include="Src\Application\Object\BackGround">
       <UniqueIdentifier>{501f9ee3-7413-4aec-8e0f-e51b068e6ccf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Load">
+      <UniqueIdentifier>{a0085bad-3f94-453e-b072-543bb9bde334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Load\SCV">
+      <UniqueIdentifier>{69122b29-6ded-4193-b083-619eb80af3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Scene\SelectScene">
+      <UniqueIdentifier>{246c6cea-8e77-4f13-854d-8467ac90429c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Enemy">
+      <UniqueIdentifier>{b45db433-35fb-4407-a62e-4f3216fb8e02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Load\Json Load">
+      <UniqueIdentifier>{4bccd641-c791-41ea-9841-136892ff8e4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -267,6 +282,19 @@
     <ClInclude Include="Src\Application\Object\BackGround\NomalBack.h">
       <Filter>Src\Application\Object\BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Object\Title\TitleClick.h" />
+    <ClInclude Include="Src\Application\Scene\SelectScene\SelectScene.h">
+      <Filter>Src\Application\Scene\SelectScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\Enemy.h">
+      <Filter>Src\Application\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Load\JsonLoad.h">
+      <Filter>Src\Application\Load\Json Load</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Load\json.hpp">
+      <Filter>Src\Application\Load\Json Load</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -418,6 +446,16 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Object\BackGround\NomalBack.cpp">
       <Filter>Src\Application\Object\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Title\TitleClick.cpp" />
+    <ClCompile Include="Src\Application\Scene\SelectScene\SelectScene.cpp">
+      <Filter>Src\Application\Scene\SelectScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\Enemy.cpp">
+      <Filter>Src\Application\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Load\JsonLoad.cpp">
+      <Filter>Src\Application\Load\Json Load</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
