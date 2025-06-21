@@ -9,22 +9,27 @@
 
 void GameScene::Event()
 {
-	Math::Vector3 playerPos = {};
-	playerPos = player->GetPos();	// プレイヤーの位置を取得
+	//カメラ制御
+	{
+		/*	Math::Matrix _Scale =
+				Math::Matrix::CreateScale(1);
+			Math::Matrix _RotationX =
+				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));*/
+		Math::Vector3 camPos = { 2 , 1 , -15 };
+		Math::Matrix _Trans =
+			Math::Matrix::CreateTranslation(camPos + player->GetPos());
 
-	// カメラの座標行列
-	Math::Matrix transMat = Math::Matrix::CreateTranslation(Math::Vector3(0, 3.0f, -5.0f) + playerPos);
+		//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
+		Math::Matrix _Mat =
+			/*_Scale * _RotationX **/ _Trans;
 
-	// カメラの回転行列を作成
-	// 少し下を向かせる
-	Math::Matrix rotMat = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(25));
 
-	// 行列を合成（拡縮 * 回転 * 座標）
-	Math::Matrix mat = rotMat * transMat;
+		//カメラに行列をセット
+		//この視点では画面には反映されない
+		m_camera->SetCameraMatrix(_Mat);
 
-	// カメラに行列をセット
-	// この時点では画面に反映されない
-	m_camera->SetCameraMatrix(mat);
+
+	}
 	
 	if (GetAsyncKeyState('T') & 0x8000)
 	{
@@ -41,24 +46,34 @@ void GameScene::Init()
 	//===============カメラ初期化=====================
 	m_camera = std::make_unique<KdCamera>();			// 1 メモリ確保
 	m_camera->SetProjectionMatrix(60);					// 2 視野角設定
+	//================================================
 
+	//===============マップ地面初期化==================
+	ground = std::make_shared<Ground>();
+	ground->Init();
+	m_objList.push_back(ground);
 	//=================================================
 
+	//===============通常背景初期化====================
+	nBack = std::make_shared<NomalBack>();
+	nBack->Init();
+	m_objList.push_back(nBack);
 	//=================================================
+	
 
-		//===============ノード読み込み=====================
-	auto nodes = JsonNodeLoader::LoadNodes("Asset/Data/nodes.json"); 
+	//===============ノード読み込み=====================
+	auto nodes = JsonNodeLoader::LoadNodes("Asset/JsonData/nodes2.json"); 
 
 	for (const auto& node : nodes)
 	{
 		std::shared_ptr<KdGameObject> obj;
 
 		// プレイヤー初期位置
-		if (node.name == "PlayerSpawn")
+		if (node.name == "SteageGoal")
 		{
 			player = std::make_shared<Player>();
-			player->SetPos(node.pos); // ← JSONで読み取った位置に設定
 			player->Init();
+			player->SetPos(node.pos * ground->GetScale()); // ← JSONで読み取った位置に設定
 			obj = player;
 		}
 		// エネミー出現位置
@@ -74,26 +89,64 @@ void GameScene::Init()
 	}
 	//=================================================
 
+	/**{
+		// ノード情報の読み込み
+		auto nodes = JsonNodeLoader::LoadNodes("Assets/nodes.json");
+
+		for (const auto& node : nodes)
+		{
+			// プレイヤー配置
+			if (node.name == "PlayerStart")
+			{
+				m_player = std::make_shared<Player>();
+				m_player->SetPos(node.position);
+				m_player->Init();
+				m_objList.push_back(m_player);
+			}
+			// ゴールオブジェクト配置（必要に応じて）
+			else if (node.name == "PlayerGoal")
+			{
+				// ゴール用オブジェクトを追加可能
+			}
+			// エネミー配置
+			else if (node.name.rfind("Enemy", 0) == 0)
+			{
+				std::shared_ptr<Enemy> enemy;
+
+				if (node.type == "Chase")
+				{
+					enemy = std::make_shared<ChaseEnemy>();
+				}
+				else if (node.type == "Dash")
+				{
+					enemy = std::make_shared<DashEnemy>();
+				}
+				else
+				{
+					enemy = std::make_shared<Enemy>(); // fallback
+				}
+
+				if (enemy)
+				{
+					enemy->SetPos(node.position);
+					enemy->Init();
+					enemy->ApplyParams(node.params); // 任意パラメータの適用（必要であれば）
+					m_objList.push_back(enemy);
+				}
+			}
+		}
+	}*/
+	
 	//=================================================
 
 
 	//==============プレイヤー初期化===================
-	player = std::make_shared<Player>();
-	player->Init();
-	m_objList.push_back(player);
+	//player = std::make_shared<Player>();
+	//player->Init();
+	//m_objList.push_back(player);
 	//=================================================
 
-	//===============マップ地面初期化==================
-	ground = std::make_shared<Ground>();
-	ground->Init();
-	m_objList.push_back(ground);
-	//=================================================
 
-	//===============通常背景初期化====================
-	nBack = std::make_shared<NomalBack>();
-	nBack->Init();
-	m_objList.push_back(nBack);
-	//=================================================
 
 	//===============メイン雑魚エネミー================
 	 

@@ -16,7 +16,14 @@ public:
 	{
 		m_pos = pos;
 	}
+
+	Math::Vector3 GetScale() const
+	{
+		return m_GroundScale;
+	}
 private:
+
+	Math::Vector3 m_GroundScale;
 
 	std::shared_ptr<KdModelData> m_model;
 

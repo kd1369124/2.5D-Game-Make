@@ -1,15 +1,30 @@
 ﻿#include "Player.h"
 #include"../../Scene/SceneManager.h"
 
+namespace TexturePath
+{
+	const std::string Idle		= "Asset/Textures/Samurai/Idle.png";
+	const std::string Walk		= "Asset/Textures/Samurai/Walk.png";
+	const std::string Jump		= "Asset/Textures/Samurai/Jump.png";
+	const std::string Run		= "Asset/Textures/Samurai/Run.png";
+	const std::string Dead		= "Asset/Textures/Samurai/Dead.png";
+	const std::string Attack1	= "Asset/Textures/Samurai/Attack_1.png";
+	const std::string Attack2	= "Asset/Textures/Samurai/Attack_2.png";
+	const std::string Attack3	= "Asset/Textures/Samurai/Attack_3.png";
+	const std::string Damege	= "Asset/Textures/Samurai/Hurt.png";
+
+
+}
+
 void Player::Init()
 {
-	m_polygon.SetMaterial("Asset/Textures/Player_Walk.png");
-	m_polygon.SetSplit(3,2);
+	m_polygon.SetMaterial(TexturePath::Idle);
+
 	m_polygon.SetPivot(KdSquarePolygon::PivotType::Center_Bottom);
 
-	m_pos = {0,0,25};
+	m_pos = {0,0,0};
 
-	m_speed = 0.5f;
+	m_speed = 0.3f;
 
 	m_anime = 0.0f;
 
@@ -18,15 +33,53 @@ void Player::Init()
 	m_mWorld = Math::Matrix::Identity;
 
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
+
+	m_WalkkeyFlg = false;
+	m_DashkeyFlg = false;
+	m_AttackkeyFlg = false;
+	m_AttackkeyFlg2 = false;
+	m_AttackkeyFlg3 = false;
+	m_JumpkeyFlg = false;
+	m_DashkeyFlg = false;
+
+	m_matelialType = NowMatelialType::Idle;
 }
 
 void Player::Update()
 {
 	m_dir = {0,0,0};
 
-	int walk[5] = { 1,2,3,4,5 };
-	m_polygon.SetUVRect(walk[(int)m_anime]);
+	NowMatelialType oldMatelialType = m_matelialType;
 
+	MatelialType(m_WalkkeyFlg, m_DashkeyFlg, m_AttackkeyFlg, m_AttackkeyFlg2, m_AttackkeyFlg3, m_JumpkeyFlg);
+	if(oldMatelialType != m_matelialType)
+	{
+		m_anime = 0.0f; //アニメーションをリセット
+	}
+	int WalkSlide[8] = { 0,1,2,3,4,5,6,7 };
+	int IdleSlide[6] = { 0,1,2,3,4,5 };
+	int DashSlide[8] = { 0,1,2,3,4,5,6,7 };
+	if (NowMatelialType::Walk)m_polygon.SetUVRect(WalkSlide[(int)m_anime]);
+	if (NowMatelialType::Idle)m_polygon.SetUVRect(IdleSlide[(int)m_anime]);
+	if (NowMatelialType::Dash)m_polygon.SetUVRect(DashSlide[(int)m_anime]);
+	
+	if(!(GetAsyncKeyState('A')&0x8000) && !(GetAsyncKeyState('D')&0x8000))
+	{
+		m_WalkkeyFlg = false;
+		
+	}
+	if ((GetAsyncKeyState('A') & 0x8000 || GetAsyncKeyState('D') & 0x8000) &&
+		(GetAsyncKeyState(VK_SHIFT) & 0x8000))
+	{
+		m_DashkeyFlg = true;
+		m_WalkkeyFlg = false;
+	}
+	else
+	{
+		m_DashkeyFlg = false;
+	}
+
+	
 	m_anime += 0.1f;
 	if (m_anime >= 5 )
 	{
@@ -36,30 +89,48 @@ void Player::Update()
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
 		m_dir += {-1, 0, 0};
+		m_WalkkeyFlg = true;
+		m_direction = false; //左向き
 	}
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
 		m_dir += {1, 0, 0};
+		m_WalkkeyFlg = true;
+		m_direction = true; //右向き
 	}
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
 		m_gravity = -0.05f;
 	}
-
 	m_pos.y -= m_gravity;
 	m_gravity += 0.005f;
 
 	m_dir.Normalize();
 
+	if (m_DashkeyFlg)
+	{
+		m_speed = 0.6f; //ダッシュ時の速度
+	}
+	else
+	{
+		m_speed = 0.3f; //通常時の速度
+	}
 	m_pos += m_dir * m_speed;
 
+	int Rot = 0;
+	if (!m_direction)
+	{
+		Rot = 180; //左向き
+	}
+
+
 	//拡縮行列
-	Math::Matrix _mScale = Math::Matrix::CreateScale(1.0f);
+	Math::Matrix _mScale = Math::Matrix::CreateScale(7.0f);
 
 	//回転行列
 	Math::Matrix _mXRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(0));
-	Math::Matrix _mYRotation = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(0));
+	Math::Matrix _mYRotation = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(Rot));
 	Math::Matrix _mZRotation = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(0));
 
 	//移動行列
@@ -136,6 +207,7 @@ void Player::PostUpdate()
 		//地面に当たってる
 		m_pos = hitPos + Math::Vector3(0, -0.1f, 0);
 		m_gravity = 0;
+		m_JumpkeyFlg = false; // 地上にいたらジャンプフラグをリセット
 	}
 
 	//球判定---------------------------------------------
@@ -203,3 +275,55 @@ void Player::DrawUnLit()
 {
 	KdShaderManager::Instance().m_StandardShader.DrawPolygon(m_polygon, m_mWorld);
 }
+
+void Player::MatelialType(bool walk, bool dash, bool atk1, bool atk2, bool atk3, bool jump)
+{
+	if (m_WalkkeyFlg)
+	{
+
+		m_polygon.SetMaterial(TexturePath::Walk);
+		m_matelialType = NowMatelialType::Walk;
+		m_polygon.SetSplit(SlideType::Walkslide, 1);
+
+	}
+	else if (m_DashkeyFlg)
+	{
+		
+		m_polygon.SetMaterial(TexturePath::Run);
+		m_matelialType = NowMatelialType::Dash;
+		m_polygon.SetSplit(SlideType::Dashslide, 1);
+	}
+	else if (atk1)
+	{
+		m_polygon.SetMaterial(TexturePath::Attack1);
+		m_matelialType = NowMatelialType::Atk1;
+		m_polygon.SetSplit(SlideType::Atk1slide, 1);
+		
+	}
+	else if (atk2)
+	{
+		m_polygon.SetMaterial(TexturePath::Attack2);
+		m_matelialType = NowMatelialType::Atk2;
+		m_polygon.SetSplit(SlideType::Atk2slide, 1);
+	}
+	else if (atk3)
+	{
+		m_polygon.SetMaterial(TexturePath::Attack3);
+		m_matelialType = NowMatelialType::Atk3;
+		m_polygon.SetSplit(SlideType::Atk3slide, 1);
+	}
+	else if (jump)
+	{
+		m_polygon.SetMaterial(TexturePath::Jump);
+		m_matelialType = NowMatelialType::Jump;
+		m_polygon.SetSplit(SlideType::Jumpslide, 1);
+	}
+	else
+	{
+		m_polygon.SetMaterial(TexturePath::Idle);
+		m_matelialType = NowMatelialType::Idle;
+		m_polygon.SetSplit(SlideType::Idleslide, 1);
+	}
+}
+
+
