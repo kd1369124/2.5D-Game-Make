@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 class NomalBack : public KdGameObject
 {
 public:
@@ -10,5 +10,8 @@ public:
 	void DrawUnLit()override;
 
 private:
+
+	//板ポリゴン
+	KdSquarePolygon m_polygon;
 
 };

@@ -11,6 +11,8 @@ public :
 	{
 		Title,
 		Game,
+		Select,
+
 	};
 
 	void PreUpdate();
