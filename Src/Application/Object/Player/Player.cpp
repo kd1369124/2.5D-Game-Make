@@ -13,20 +13,6 @@ namespace TexturePath
 	const std::string Attack3	= "Asset/Textures/Samurai/Attack_3.png";
 	const std::string Damege	= "Asset/Textures/Samurai/Hurt.png";
 
-	const std::string TestRIdle		= "Asset/Textures/Chara/Idle/RightIdle.png";
-	const std::string TestLIdle		= "Asset/Textures/Chara/Idle/LeftIdle.png";
-	const std::string TestRWalk		= "Asset/Textures/Chara/Walk/RightWalk.png";
-	const std::string TestLWalk		= "Asset/Textures/Chara/Walk/LeftWalk.png";
-	const std::string TestRJump		= "Asset/Textures/Chara/Jump/RightJump.png";
-	const std::string TestLJump		= "Asset/Textures/Chara/Jump/LeftJump.png";
-	const std::string TestRRun		= "Asset/Textures/Chara/Run/RightRun.png";
-	const std::string TestLRun		= "Asset/Textures/Chara/Run/LeftRun.png";
-	const std::string TestDead		= "Asset/Textures/Chara/Dead.png";
-	const std::string TestLAttack1	= "Asset/Textures/Chara/Attack/LeftAttack_1.png";
-	const std::string TestRAttack1	= "Asset/Textures/Chara/Attack/RightAttack_1.png";
-	const std::string TestAttack2	= "Asset/Textures/Chara//Attack_2.png";
-	const std::string TestAttack3	= "Asset/Textures/Chara//Attack_3.png";
-	const std::string TestDamege	= "Asset/Textures/Chara//Hurt.png";
 }
 
 void Player::Init()

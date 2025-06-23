@@ -25,11 +25,15 @@ void ShotEnemy::Init()
 	m_pos = {};							// 初期位置を設定
 	m_gravity = 0.5f;					// 重力の値を設定
 	m_mWorld = Math::Matrix::Identity;	// ワールド行列を単位行列で初期化
-	m_searchArea = 2.0f;					// プレイヤー検知範囲の半径を設定
+	m_searchArea = 4.0f;					// プレイヤー検知範囲の半径を設定
+	m_dashthArea = 2.0f;				// ダッシュ攻撃範囲の半径を設定
+	m_attackarea = 0.7f;				// 攻撃範囲の半径を設定
 	m_speed = 0.3f;					// 移動速度を設定
 	m_direction = true;				// 右向きに設定
 	m_matelialType = NowMatelialType::Idle;	// マテリアルの種類を初期化
 	m_chaseFlg = false;				// 追尾フラグを初期化
+	RunFlg = false;				// ダッシュフラグを初期化
+	IdleFlg = true;				// アイドルフラグを初期化
 
 
 	//アニメーション初期化
@@ -51,6 +55,7 @@ void ShotEnemy::Update()
 {
 
 	m_dir = { 0,0,0 };
+
 	NowMatelialType oldMatelialType = m_matelialType;
 
 
@@ -65,28 +70,45 @@ void ShotEnemy::Update()
 	{
 		// lock() … weakをshared_ptrに変換
 		targetPos = m_target.lock()->GetPos();
-
 		// 対象との距離(ベクトルの長さ)で判定　※球判定
 		Math::Vector3 v = targetPos - m_pos;
-
 		// ベクトルの長さが一定値以下なら追尾モードへ
 		if (v.Length() < m_searchArea)
 		{
+			if (v.Length() < m_dashthArea)
+			{
+				RunFlg = true; // ダッシュフラグを立てる
+			}
 			m_chaseFlg = true;
 		}
 		else
 		{
 			m_chaseFlg = false;
+			IdleFlg = true; // 追尾対象がいないのでアイドル状態にする
 		}
-
 		// 追尾フラグONの場合は追尾する
 		if (m_chaseFlg)
 		{
 			// y軸を 0 にしておく　※空飛んで追いかけるの防止
 			v.y = 0.0f;
+			// 対象との距離で正規化前に攻撃か移動のみか射撃か判別する
+			if ((v.x < m_attackarea) && RunFlg )
+			{
+				AtkFlg = true; // 攻撃フラグを立てる
+			}
 
 			// 対象へのベクトルの長さを 1 に
 			v.Normalize();
+
+			// 方向を向く
+			if (v.x < 0.0f)
+			{
+				m_direction = false; // 左向き
+			}
+			else
+			{
+				m_direction = true; // 右向き
+			}
 
 			// 方向確定
 			m_dir = v;
@@ -96,7 +118,6 @@ void ShotEnemy::Update()
 			m_dir = {};
 		}
 	}
-
 
 	if (oldMatelialType != m_matelialType)
 	{
@@ -117,21 +138,7 @@ void ShotEnemy::Update()
 	}
 
 	m_polygon->SetUVRect(animeCnt);
-
-
-
-	// プレイヤー検知範囲判定
-	{
-		m_pDebugWire->AddDebugSphere
-		(
-			m_pos + Math::Vector3(0, 0.5f, 0),	// 球の中心位置
-			m_searchArea,			// 球の半径
-			kRedColor			// 球の色
-		);
-	}
-
 	m_pos += m_dir * m_speed;
-
 	// 行列関係
 	{
 		int Rot = 0;
@@ -152,6 +159,34 @@ void ShotEnemy::Update()
 
 		m_mWorld = _mScale * (_mXRotation * _mYRotation * _mZRotation) * _mTrans;
 	}
+	// プレイヤー検知範囲判定
+	{
+		m_pDebugWire->AddDebugSphere
+		(
+			m_pos + Math::Vector3(0, 0.5f, 0),	// 球の中心位置
+			m_searchArea,			// 球の半径
+			kRedColor			// 球の色
+		);
+	}
+	// プレイヤー検知範囲判定
+	{
+		m_pDebugWire->AddDebugSphere
+		(
+			m_pos + Math::Vector3(0, 0.5f, 0),	// 球の中心位置
+			m_dashthArea,			// 球の半径
+			kBlueColor			// 球の色
+		);
+	}
+	// プレイヤー検知範囲判定
+	{
+		m_pDebugWire->AddDebugSphere
+		(
+			m_pos + Math::Vector3(0, 0.5f, 0),	// 球の中心位置
+			m_attackarea,			// 球の半径
+			kGreenColor			// 球の色
+		);
+	}
+
 }
 void ShotEnemy::PostUpdate()
 {
@@ -172,7 +207,14 @@ void ShotEnemy::ChangeMatelialType()
 	if (m_matelialType == NowMatelialType::Idle)
 	{
 		m_polygon->SetMaterial(TexturePath::Idle);
-		m_animeInfo.end = 0;
+		m_polygon->SetUVRect(6,1);	// UVを0に設定
+		m_animeInfo.end = 5;
+	}
+	if (m_matelialType == NowMatelialType::Walk)
+	{
+		m_polygon->SetMaterial(TexturePath::Walk);
+		m_polygon->SetUVRect(8, 1);	// UVを0に設定
+		m_animeInfo.end = 7;	// アニメーションの終了コマを6にする
 	}
 
 }
