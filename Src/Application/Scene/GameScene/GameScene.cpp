@@ -1,34 +1,35 @@
 ﻿#include "GameScene.h"
 #include"../SceneManager.h"
-#include"../../Object/Player/Player.h"
+//#include"../../Object/Player/Player.h"
 #include"../../Object/Ground/Ground.h"
 #include"../../Object/BackGround/NomalBack.h"
 #include"../../Object/Enemy/Enemy.h"
-#include"../../Object/Ground/Ground.h"
 #include"../../Load/JsonLoad.h"
 #include"../../Object/Player/TestPlayer.h"
 #include"../../Object/Enemy/ShotEnemy.h"
 
 void GameScene::Event()
 {
+
 	//カメラ制御
 	{
 		/*	Math::Matrix _Scale =
 				Math::Matrix::CreateScale(1);
 			Math::Matrix _RotationX =
 				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));*/
-		Math::Vector3 camPos = { 2 , 1 , -3 };
-		Math::Matrix _Trans =
-			Math::Matrix::CreateTranslation(camPos + testplayer->GetPos());
 
-		//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
-		Math::Matrix _Mat =
-			/*_Scale * _RotationX **/ _Trans;
+			Math::Vector3 camPos = { 1 + testplayer->GetPos().x , 2 , -3 + testplayer->GetPos().z};
+			Math::Matrix _Trans =
+				Math::Matrix::CreateTranslation(camPos);
 
-		//カメラに行列をセット
-		//この視点では画面には反映されない
-		m_camera->SetCameraMatrix(_Mat);
+			//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
+			Math::Matrix _Mat =
+				/*_Scale * _RotationX **/ _Trans;
 
+			//カメラに行列をセット
+			//この視点では画面には反映されない
+			m_camera->SetCameraMatrix(_Mat);
+		
 
 	}
 	
@@ -63,82 +64,83 @@ void GameScene::Init()
 	
 
 	//===============ノード読み込み=====================
-	auto nodes = JsonNodeLoader::LoadNodes("Asset/JsonData/nodes2.json"); 
+	//auto nodes = JsonNodeLoader::LoadNodes("Asset/JsonData/nodes2.json"); 
 
-	for (const auto& node : nodes)
-	{
-		std::shared_ptr<KdGameObject> obj;
+	//for (const auto& node : nodes)
+	//{
+	//	std::shared_ptr<KdGameObject> obj;
 
-		// プレイヤー初期位置
-		if (node.name == "SteageGoal")
-		{
-			testplayer = std::make_shared<TestPlayer>();
-			testplayer->SetPos(node.pos * ground->GetScale());	// ← JSONで読み取った位置に設定
-			testplayer->Init();
-	
-			obj = testplayer;
-		}
-		// エネミー出現位置
-		else if (node.name.rfind("Enemy", 0) == 0)				// "Enemy" で始まる名前
-		{
-			std::shared_ptr<ShotEnemy> shotenemy = std::make_shared<ShotEnemy>();
-			shotenemy->Init();
-			shotenemy->SetTarget(testplayer);					// ターゲットをプレイヤーに設定
-			shotenemy->SetPos(node.pos);
-			obj = shotenemy;
-		}
+	//	// プレイヤー初期位置
+	//	if (node.name == "SteageGoal")
+	//	{
+	//		testplayer = std::make_shared<TestPlayer>();
+	//		testplayer->SetPos(node.pos * ground->GetScale());	// ← JSONで読み取った位置に設定
+	//		testplayer->Init();
+	//
+	//		obj = testplayer;
+	//	}
+	//	// エネミー出現位置
+	//	else if (node.name.rfind("Enemy", 0) == 0)				// "Enemy" で始まる名前
+	//	{
+	//		std::shared_ptr<ShotEnemy> shotenemy = std::make_shared<ShotEnemy>();
+	//		shotenemy->Init();
+	//		shotenemy->SetTarget(testplayer);					// ターゲットをプレイヤーに設定
+	//		shotenemy->SetPos(node.pos);
+	//		obj = shotenemy;
+	//	}
 
-		if (obj) { m_objList.push_back(obj); }
-	}
+	//	if (obj) { m_objList.push_back(obj); }
+	//}
 	//=================================================
 
-	/**{
+
+
+	
 		// ノード情報の読み込み
-		auto nodes = JsonNodeLoader::LoadNodes("Assets/nodes.json");
+		auto nodes = JsonNodeLoader::LoadNodes("Asset/Models/nodes.json");
 
 		for (const auto& node : nodes)
 		{
 			// プレイヤー配置
-			if (node.name == "PlayerStart")
+			if (node.name == "SteageGoal")
 			{
-				m_player = std::make_shared<Player>();
-				m_player->SetPos(node.position);
-				m_player->Init();
-				m_objList.push_back(m_player);
+				testplayer = std::make_shared<TestPlayer>();
+				testplayer->Init();
+				testplayer->SetPos({node.pos * ground->GetScale()});
+				AddObject(testplayer);
 			}
 			// ゴールオブジェクト配置（必要に応じて）
-			else if (node.name == "PlayerGoal")
+			else if (node.name == "")
 			{
 				// ゴール用オブジェクトを追加可能
 			}
 			// エネミー配置
 			else if (node.name.rfind("Enemy", 0) == 0)
 			{
-				std::shared_ptr<Enemy> enemy;
+				std::shared_ptr<KdGameObject> enemy;
 
-				if (node.type == "Chase")
+				if (node.type == "shot")
 				{
-					enemy = std::make_shared<ChaseEnemy>();
+					enemy = std::make_shared<ShotEnemy>();
 				}
 				else if (node.type == "Dash")
 				{
-					enemy = std::make_shared<DashEnemy>();
+					//enemy = std::make_shared<DashEnemy>();
 				}
 				else
 				{
-					enemy = std::make_shared<Enemy>(); // fallback
+					//enemy = std::make_shared<Enemy>(); // fallback
 				}
 
 				if (enemy)
 				{
-					enemy->SetPos(node.position);
 					enemy->Init();
-					enemy->ApplyParams(node.params); // 任意パラメータの適用（必要であれば）
+					enemy->SetPos(node.pos * ground->GetScale());
 					m_objList.push_back(enemy);
 				}
 			}
 		}
-	}*/
+	
 	
 	//=================================================
 

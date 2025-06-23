@@ -52,7 +52,10 @@ private:
 
 	float m_gravity				= 0.0f;
 	float m_searchArea			= 0.0f;
+	float m_dashthArea			= 0.0f;	
 	float m_speed				= 0.0f;
+	float m_attackarea			= 0.0f;
+	float m_jumpPower			= 0.0f;
 
 	int m_hp					= 0;	// HP
 
@@ -60,6 +63,7 @@ private:
 	bool Right					= false;
 	bool IdleFlg				= false;
 	bool AtkFlg					= false;
+	bool ShotFlg				= false;
 	bool GuardFlg				= false;
 	bool WalkFlg				= false;
 	bool RunFlg					= false;

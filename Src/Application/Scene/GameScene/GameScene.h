@@ -18,7 +18,7 @@ private:
 	void Event() override;
 	void Init()  override;
 
-
+	bool InitFlg = false;
 
 	std::shared_ptr<Player>player;
 	std::shared_ptr<TestPlayer>testplayer;
