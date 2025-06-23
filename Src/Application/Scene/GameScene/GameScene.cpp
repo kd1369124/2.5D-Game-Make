@@ -1,34 +1,35 @@
 ﻿#include "GameScene.h"
 #include"../SceneManager.h"
-#include"../../Object/Player/Player.h"
+//#include"../../Object/Player/Player.h"
 #include"../../Object/Ground/Ground.h"
 #include"../../Object/BackGround/NomalBack.h"
 #include"../../Object/Enemy/Enemy.h"
-#include"../../Object/Ground/Ground.h"
 #include"../../Load/JsonLoad.h"
 #include"../../Object/Player/TestPlayer.h"
 #include"../../Object/Enemy/ShotEnemy.h"
 
 void GameScene::Event()
 {
+
 	//カメラ制御
 	{
 		/*	Math::Matrix _Scale =
 				Math::Matrix::CreateScale(1);
 			Math::Matrix _RotationX =
 				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));*/
-		Math::Vector3 camPos = { 1 + testplayer->GetPos().x , 2 , -3 };
-		Math::Matrix _Trans =
-			Math::Matrix::CreateTranslation(camPos) ;
 
-		//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
-		Math::Matrix _Mat =
-			/*_Scale * _RotationX **/ _Trans;
+			Math::Vector3 camPos = { 1 + testplayer->GetPos().x , 2 , -3 + testplayer->GetPos().z};
+			Math::Matrix _Trans =
+				Math::Matrix::CreateTranslation(camPos);
 
-		//カメラに行列をセット
-		//この視点では画面には反映されない
-		m_camera->SetCameraMatrix(_Mat);
+			//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
+			Math::Matrix _Mat =
+				/*_Scale * _RotationX **/ _Trans;
 
+			//カメラに行列をセット
+			//この視点では画面には反映されない
+			m_camera->SetCameraMatrix(_Mat);
+		
 
 	}
 	
@@ -63,7 +64,7 @@ void GameScene::Init()
 	
 
 	//===============ノード読み込み=====================
-	auto nodes = JsonNodeLoader::LoadNodes("Asset/JsonData/nodes2.json"); 
+	//auto nodes = JsonNodeLoader::LoadNodes("Asset/JsonData/nodes2.json"); 
 
 	//for (const auto& node : nodes)
 	//{
@@ -92,9 +93,11 @@ void GameScene::Init()
 	//}
 	//=================================================
 
-	{
+
+
+	
 		// ノード情報の読み込み
-		auto nodes = JsonNodeLoader::LoadNodes("Assets/nodes.json");
+		auto nodes = JsonNodeLoader::LoadNodes("Asset/Models/nodes.json");
 
 		for (const auto& node : nodes)
 		{
@@ -103,8 +106,8 @@ void GameScene::Init()
 			{
 				testplayer = std::make_shared<TestPlayer>();
 				testplayer->Init();
-				player->SetPos(node.pos);
-				m_objList.push_back(testplayer);
+				testplayer->SetPos({node.pos * ground->GetScale()});
+				AddObject(testplayer);
 			}
 			// ゴールオブジェクト配置（必要に応じて）
 			else if (node.name == "")
@@ -132,12 +135,12 @@ void GameScene::Init()
 				if (enemy)
 				{
 					enemy->Init();
-					enemy->SetPos(node.pos);
+					enemy->SetPos(node.pos * ground->GetScale());
 					m_objList.push_back(enemy);
 				}
 			}
 		}
-	}
+	
 	
 	//=================================================
 

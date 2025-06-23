@@ -103,6 +103,9 @@
     <Filter Include="Src\Application\Object\Attack">
       <UniqueIdentifier>{dccd0481-505d-44a5-8f13-c944129a6232}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Titlesprite">
+      <UniqueIdentifier>{b0e73831-641a-457c-be30-702263b104d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -307,6 +310,9 @@
     <ClInclude Include="Src\Application\Object\Enemy\ShotEnemy.h">
       <Filter>Src\Application\Object\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Titlesprite\Titlesprite.h">
+      <Filter>Src\Application\Titlesprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -477,6 +483,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Object\Enemy\ShotEnemy.cpp">
       <Filter>Src\Application\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Titlesprite\Titlesprite.cpp">
+      <Filter>Src\Application\Titlesprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

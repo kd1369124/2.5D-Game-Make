@@ -1,11 +1,12 @@
-                {
+{
     "nodes": [
         {
-            "name": "Player Goal",
+            "name": "Enemy",
+            "type": "nomal",
             "position": [
-                189.925,
-                -11.113,
-                41.157
+                47.2593,
+                1.244,
+                1.725
             ],
             "rotation": [
                 0.0,
@@ -19,11 +20,12 @@
             ]
         },
         {
-            "name": "Player Start",
+            "name": "Enemy.001",
+            "type": "shot",
             "position": [
-                8.358,
-                -9.544,
-                43.401
+                36.9928,
+                1.0272,
+                1.7001
             ],
             "rotation": [
                 0.0,
@@ -37,11 +39,12 @@
             ]
         },
         {
-            "name": "world",
+            "name": "PlayerStart",
+            "type": "Unknown",
             "position": [
-                0.0,
-                0.0,
-                0.0
+                70.584,
+                0.1834,
+                1.7031
             ],
             "rotation": [
                 0.0,
@@ -49,9 +52,28 @@
                 0.0
             ],
             "scale": [
+                0.2059,
                 1.0,
-                1.0,
-                1.0
+                0.2258
+            ]
+        },
+        {
+            "name": "SteageGoal",
+            "type": "Unknown",
+            "position": [
+                -68.9969,
+                0.4973,
+                5.249
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.1262,
+                1.157,
+                0.3091
             ]
         }
     ]

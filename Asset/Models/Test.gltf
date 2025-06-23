@@ -10,14 +10,17 @@
 			"nodes":[
 				0,
 				1,
-				2
+				2,
+				3,
+				4,
+				5
 			]
 		}
 	],
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Cube",
+			"name":"Cube.001",
 			"scale":[
 				7,
 				7,
@@ -27,15 +30,15 @@
 		{
 			"name":"PlayerStart",
 			"rotation":[
-				0.7042247653007507,
+				0.7042248249053955,
 				0,
 				0,
-				0.7099771499633789
+				0.7099770307540894
 			],
 			"scale":[
 				0.20589959621429443,
-				0.2257716804742813,
-				0.9999685883522034
+				0.2257717102766037,
+				0.9999686479568481
 			],
 			"translation":[
 				70.58403778076172,
@@ -49,21 +52,55 @@
 				0.9782102704048157,
 				0,
 				0,
-				0.20761674642562866
+				0.20761673152446747
 			],
 			"scale":[
 				1.1262181997299194,
-				0.3091380000114441,
+				0.3091380298137665,
 				1.1570281982421875
 			],
 			"translation":[
 				-68.99693298339844,
-				2.2441165447235107,
+				1.6393818855285645,
 				-0.4972562789916992
+			]
+		},
+		{
+			"mesh":1,
+			"name":"Cube"
+		},
+		{
+			"name":"Enemy",
+			"translation":[
+				47.259281158447266,
+				1.7250338792800903,
+				-1.2439813613891602
+			]
+		},
+		{
+			"name":"Enemy.001",
+			"translation":[
+				36.99275588989258,
+				1.7001423835754395,
+				-1.0271786451339722
 			]
 		}
 	],
 	"materials":[
+		{
+			"doubleSided":true,
+			"name":"Material.001",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.800000011920929,
+					0.800000011920929,
+					0.800000011920929,
+					1
+				],
+				"metallicFactor":0,
+				"roughnessFactor":0.5
+			}
+		},
 		{
 			"doubleSided":true,
 			"name":"Material",
@@ -81,7 +118,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cube",
+			"name":"Cube.001",
 			"primitives":[
 				{
 					"attributes":{
@@ -91,6 +128,20 @@
 					},
 					"indices":3,
 					"material":0
+				}
+			]
+		},
+		{
+			"name":"Cube",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":4,
+						"NORMAL":5,
+						"TEXCOORD_0":6
+					},
+					"indices":7,
+					"material":1
 				}
 			]
 		}
@@ -129,6 +180,40 @@
 			"componentType":5123,
 			"count":36,
 			"type":"SCALAR"
+		},
+		{
+			"bufferView":4,
+			"componentType":5126,
+			"count":24,
+			"max":[
+				1,
+				1,
+				1
+			],
+			"min":[
+				-1,
+				-1,
+				-1
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":5,
+			"componentType":5126,
+			"count":24,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":6,
+			"componentType":5126,
+			"count":24,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":7,
+			"componentType":5123,
+			"count":36,
+			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
@@ -155,12 +240,36 @@
 			"byteLength":72,
 			"byteOffset":768,
 			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":288,
+			"byteOffset":840,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":288,
+			"byteOffset":1128,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":192,
+			"byteOffset":1416,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":72,
+			"byteOffset":1608,
+			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":840,
-			"uri":"TestGround1.bin"
+			"byteLength":1680,
+			"uri":"Test.bin"
 		}
 	]
 }
