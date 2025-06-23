@@ -25,10 +25,19 @@ enum SlideType
 
 
 };
-
 class Player : public KdGameObject
 {
 public:
+
+	//アニメーション情報
+	struct AnimationInfo
+	{
+		int start;        //開始コマ
+		int end;        //終了コマ
+		float count;    //現在のコマ
+		float speed;    //アニメーションの速度
+	};
+
 	Player(){}
 	~Player(){}
 
@@ -40,7 +49,7 @@ public:
 	void GenerateDepthMapFromLight() override;
 	void DrawUnLit()override;
 
-	void MatelialType(bool walk = false, bool dash = false, bool atk1 = false , bool atk2 = false , bool atk3 = false , bool jump = false);
+	void MatelialType();
 
 	void SetPos(const Math::Vector3& pos) override
 	{
@@ -58,9 +67,9 @@ private:
 
 	NowMatelialType m_matelialType;
 
+	AnimationInfo m_animeInfo;
 
-
-	Math::Vector3 m_pos;
+	Math::Vector3 m_pos = {};
 
 	Math::Vector3 m_dir;
 
@@ -69,6 +78,11 @@ private:
 	float m_anime = 0;
 
 	float m_gravity = 0;
+
+	int WalkSlide[8] = { 0,1,2,3,4,5,6,7 };
+	int IdleSlide[6] = { 0,1,2,3,4,5 };
+	int DashSlide[8] = { 0,1,2,3,4,5,6,7 };
+	int JumpSlide[12] = { 0,1,2,3,4,5,6,7,8,9,10,11 };
 
 	//======================行動フラグ======================
 	bool m_WalkkeyFlg = false;

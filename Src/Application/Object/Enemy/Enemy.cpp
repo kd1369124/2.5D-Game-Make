@@ -2,6 +2,7 @@
 
 void Enemy::Init()
 {
+	m_enemyType = EnemyType::Nomal;
 }
 
 void Enemy::DrawUnLit()

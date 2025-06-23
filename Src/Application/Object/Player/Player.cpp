@@ -13,22 +13,35 @@ namespace TexturePath
 	const std::string Attack3	= "Asset/Textures/Samurai/Attack_3.png";
 	const std::string Damege	= "Asset/Textures/Samurai/Hurt.png";
 
-
+	const std::string TestRIdle		= "Asset/Textures/Chara/Idle/RightIdle.png";
+	const std::string TestLIdle		= "Asset/Textures/Chara/Idle/LeftIdle.png";
+	const std::string TestRWalk		= "Asset/Textures/Chara/Walk/RightWalk.png";
+	const std::string TestLWalk		= "Asset/Textures/Chara/Walk/LeftWalk.png";
+	const std::string TestRJump		= "Asset/Textures/Chara/Jump/RightJump.png";
+	const std::string TestLJump		= "Asset/Textures/Chara/Jump/LeftJump.png";
+	const std::string TestRRun		= "Asset/Textures/Chara/Run/RightRun.png";
+	const std::string TestLRun		= "Asset/Textures/Chara/Run/LeftRun.png";
+	const std::string TestDead		= "Asset/Textures/Chara/Dead.png";
+	const std::string TestLAttack1	= "Asset/Textures/Chara/Attack/LeftAttack_1.png";
+	const std::string TestRAttack1	= "Asset/Textures/Chara/Attack/RightAttack_1.png";
+	const std::string TestAttack2	= "Asset/Textures/Chara//Attack_2.png";
+	const std::string TestAttack3	= "Asset/Textures/Chara//Attack_3.png";
+	const std::string TestDamege	= "Asset/Textures/Chara//Hurt.png";
 }
 
 void Player::Init()
 {
 	m_polygon.SetMaterial(TexturePath::Idle);
-
+	m_polygon.SetScale(2);
 	m_polygon.SetPivot(KdSquarePolygon::PivotType::Center_Bottom);
 
-	m_pos = {0,0,0};
+
 
 	m_speed = 0.3f;
 
 	m_anime = 0.0f;
 
-	m_gravity = 0;
+	m_gravity = 0.5f;
 
 	m_mWorld = Math::Matrix::Identity;
 
@@ -41,68 +54,109 @@ void Player::Init()
 	m_AttackkeyFlg3 = false;
 	m_JumpkeyFlg = false;
 	m_DashkeyFlg = false;
-
+	m_direction = true; //右向き
 	m_matelialType = NowMatelialType::Idle;
+
+	m_animeInfo.start = 0.0f;	//開始コマを0.0fで初期化
+	m_animeInfo.end = 0.0f;		//終了コマを0.0fで初期化
+	m_animeInfo.count = 0.0f;	//現在のコマ数カウントを0.0fで初期化
+	m_animeInfo.speed = 0.0f;	//アニメーション速度を0.0fで初期化
 }
 
 void Player::Update()
 {
-	m_dir = {0,0,0};
-
+	m_dir = { 0,0,0 };
 	NowMatelialType oldMatelialType = m_matelialType;
 
-	MatelialType(m_WalkkeyFlg, m_DashkeyFlg, m_AttackkeyFlg, m_AttackkeyFlg2, m_AttackkeyFlg3, m_JumpkeyFlg);
-	if(oldMatelialType != m_matelialType)
+	if (oldMatelialType != m_matelialType)
 	{
 		m_anime = 0.0f; //アニメーションをリセット
 	}
-	int WalkSlide[8] = { 0,1,2,3,4,5,6,7 };
-	int IdleSlide[6] = { 0,1,2,3,4,5 };
-	int DashSlide[8] = { 0,1,2,3,4,5,6,7 };
-	if (NowMatelialType::Walk)m_polygon.SetUVRect(WalkSlide[(int)m_anime]);
-	if (NowMatelialType::Idle)m_polygon.SetUVRect(IdleSlide[(int)m_anime]);
-	if (NowMatelialType::Dash)m_polygon.SetUVRect(DashSlide[(int)m_anime]);
-	
-	if(!(GetAsyncKeyState('A')&0x8000) && !(GetAsyncKeyState('D')&0x8000))
-	{
-		m_WalkkeyFlg = false;
-		
-	}
-	if ((GetAsyncKeyState('A') & 0x8000 || GetAsyncKeyState('D') & 0x8000) &&
-		(GetAsyncKeyState(VK_SHIFT) & 0x8000))
-	{
-		m_DashkeyFlg = true;
-		m_WalkkeyFlg = false;
-	}
-	else
-	{
-		m_DashkeyFlg = false;
-	}
 
-	
-	m_anime += 0.1f;
-	if (m_anime >= 5 )
-	{
-		m_anime = 0;
-	}
+
 
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
 		m_dir += {-1, 0, 0};
-		m_WalkkeyFlg = true;
+		if (!m_JumpkeyFlg)
+		{
+			m_matelialType = NowMatelialType::Walk;
+			m_WalkkeyFlg = true; //歩行フラグをオン
+		}
 		m_direction = false; //左向き
 	}
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
 		m_dir += {1, 0, 0};
-		m_WalkkeyFlg = true;
+		if (!m_JumpkeyFlg)
+		{
+			m_matelialType = NowMatelialType::Walk;
+			m_WalkkeyFlg = true; //歩行フラグをオン
+		}
 		m_direction = true; //右向き
 	}
-
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	if (!(GetAsyncKeyState('A') & 0x8000) && !(GetAsyncKeyState('D') & 0x8000))
 	{
-		m_gravity = -0.05f;
+		m_WalkkeyFlg = false; //両方押されたら歩行フラグをオフ
 	}
+	if ((GetAsyncKeyState('A') & 0x8000 || GetAsyncKeyState('D') & 0x8000) &&
+		(GetAsyncKeyState(VK_SHIFT) & 0x8000))
+	{
+		m_DashkeyFlg = true;
+		if (!m_JumpkeyFlg)
+		{
+			m_matelialType = NowMatelialType::Dash;
+		}
+	}
+	else
+	{
+		m_DashkeyFlg = false;
+	}
+	if (!m_WalkkeyFlg && !m_DashkeyFlg && !m_JumpkeyFlg && !m_AttackkeyFlg && !m_AttackkeyFlg2 && !m_AttackkeyFlg3)
+	{
+		m_matelialType = NowMatelialType::Idle;
+	}
+
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000 && !m_JumpkeyFlg)
+	{
+		m_gravity = -0.1f;
+		m_JumpkeyFlg = true; //ジャンプフラグをオン
+		m_matelialType = NowMatelialType::Jump;
+		m_animeInfo.count = 0.0f; //アニメーションのコマをリセット
+	}
+
+	switch (m_matelialType)
+	{
+	case Idle:
+		m_animeInfo.end = 5;
+		m_animeInfo.speed = 0.1f;
+		break;
+	case Walk:
+		m_animeInfo.end = 7;
+		m_animeInfo.speed = 0.1f;
+		break;
+	case Dash:
+		m_animeInfo.end = 7;
+		m_animeInfo.speed = 0.2f;
+		break;
+	case Atk1:
+		break;
+	case Atk2:
+		break;
+	case Atk3:
+		break;
+	case Jump:
+		m_animeInfo.end = 11;
+		m_animeInfo.speed = 0.1f;
+		break;
+	case Death:
+		break;
+	default:
+		break;
+	}
+
+	MatelialType();
+
 	m_pos.y -= m_gravity;
 	m_gravity += 0.005f;
 
@@ -110,160 +164,160 @@ void Player::Update()
 
 	if (m_DashkeyFlg)
 	{
-		m_speed = 0.6f; //ダッシュ時の速度
+		m_speed = 0.8f; //ダッシュ時の速度
 	}
 	else
 	{
 		m_speed = 0.3f; //通常時の速度
 	}
-	m_pos += m_dir * m_speed;
 
-	int Rot = 0;
-	if (!m_direction)
+	m_pos += m_dir * m_speed;
+	
+	////アニメーションの更新作業
+	m_animeInfo.count += m_animeInfo.speed;    //コマ数を加算
+
+	int animeCnt = static_cast<int>(m_animeInfo.start + m_animeInfo.count);
+	//最後のコマを表示したら戻してループさせる
+
+	if (animeCnt > m_animeInfo.end)
 	{
-		Rot = 180; //左向き
+		animeCnt = m_animeInfo.start;        //最初のコマに戻す
+		m_animeInfo.count = 0.0f;            //コマ数をリセット
 	}
 
 
-	//拡縮行列
-	Math::Matrix _mScale = Math::Matrix::CreateScale(7.0f);
+	//UV設定
+	m_polygon.SetUVRect(animeCnt);
+	
+	// 行列関係
+	{
+		int Rot = 0;
+		if (!m_direction)
+		{
+			Rot = 180; //左向き
+		}
+		//拡縮行列
+		Math::Matrix _mScale = Math::Matrix::CreateScale(1.0f);
 
-	//回転行列
-	Math::Matrix _mXRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(0));
-	Math::Matrix _mYRotation = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(Rot));
-	Math::Matrix _mZRotation = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(0));
+		//回転行列
+		Math::Matrix _mXRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(0));
+		Math::Matrix _mYRotation = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(Rot));
+		Math::Matrix _mZRotation = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(0));
 
-	//移動行列
-	Math::Matrix _mTrans = Math::Matrix::CreateTranslation(m_pos);
+		//移動行列
+		Math::Matrix _mTrans = Math::Matrix::CreateTranslation(m_pos);
 
-	m_mWorld = _mScale * (_mXRotation * _mYRotation * _mZRotation) * _mTrans;
-
-
-
+		m_mWorld = _mScale * (_mXRotation * _mYRotation * _mZRotation) * _mTrans;
+	}
 }
 
 void Player::PostUpdate()
 {
-
-
 	//========================
-//当たり判定はここ
+//当たる側の処理
 //========================
-//当たる側　
+
 //========================
-//レイ判定（全ての面に対して行うので重い処理）
+//レイ判定
 //========================
-//レイ判定用の変数
+//レイ判定用に変数を作成
 	KdCollider::RayInfo rayInfo;
-	//レイの発射位置（座標）を設定
+	//レイの発射位置(座標)を設定
 	rayInfo.m_pos = m_pos;
-
-	//レイをちょっと上からの位置にする
-	rayInfo.m_pos.y += 0.1f;
-
+	//ちょっと上からの位置にする
+	rayInfo.m_pos.y -= 0.01f;
 	//段差の許容範囲を設定
 	float enableStepHigh = 0.2f;
 	rayInfo.m_pos.y += enableStepHigh;
-
-	//レイの発射方向を設定
-	rayInfo.m_dir = { 0,-1,0 };//下方向
+	//レイの発射方向
+	rayInfo.m_dir = { 0,-1,0 }; //今回のみ下方向
 	//レイの長さを設定
 	rayInfo.m_range = m_gravity + enableStepHigh;
-
-	//当たり判定したいタイプを設定
+	//当たり判定をしたいタイプを設定
 	rayInfo.m_type = KdCollider::TypeGround;
 
-	//デバッグ
+	//デバック
 	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range);
 
-	//レイと当たり判定を行う
-	//レイ判定は　貫通型なのでレイ当たったオブジェクト情報を格納するリスト作成
+	//レイに当たったオブジェクト情報を格納するリスト
 	std::list<KdCollider::CollisionResult> retRayList;
 
-	//レイ判定
+	//レイと当たり判定をする!!
 	for (auto& obj : SceneManager::Instance().GetObjList())
 	{
 		obj->Intersects(rayInfo, &retRayList);
 	}
 
-	//レイに当たったリストから一番近いオブジェクトを検知
-	float maxOverLap = 0;	//はみ出た分を管理する変数
-	Math::Vector3 hitPos;	//当たった座標
-	bool hit = false;		//当たったフラグ
+	//レイに一番近い
+	float maxOverlap = 0.0f;
+	Math::Vector3 hitPos;
+	bool hit = false;
+
 	for (auto& ret : retRayList)
 	{
 		//レイを遮断しオーバーした長さが一番長いものを探す
-		if (maxOverLap < ret.m_overlapDistance)
+		if (maxOverlap < ret.m_overlapDistance)
 		{
 			//更新
-			maxOverLap = ret.m_overlapDistance;
+			maxOverlap = ret.m_overlapDistance;
 			hitPos = ret.m_hitPos;
 			hit = true;
 		}
 	}
-
 	if (hit)
 	{
-		//地面に当たってる
+		//当たっていたら
 		m_pos = hitPos + Math::Vector3(0, -0.1f, 0);
-		m_gravity = 0;
-		m_JumpkeyFlg = false; // 地上にいたらジャンプフラグをリセット
+		m_gravity = 0.0f;
+		m_JumpkeyFlg = false; //ジャンプフラグをオフ
+
 	}
+	//========================
+	//球判定
+	//========================
+	//球判定用変数
+	KdCollider::SphereInfo spherInfo;
+	//球の中心座標
+	spherInfo.m_sphere.Center = m_pos + Math::Vector3(0, 0.75f, 0);
+	//球の半径
+	spherInfo.m_sphere.Radius = 0.55f;
+	//当たり判定したいタイプを設定
+	spherInfo.m_type = KdCollider::TypeGround;
 
-	//球判定---------------------------------------------
-	//球判定用の変数を作成
-	KdCollider::SphereInfo sphereInfo;
-	//球の中心座標を設定
-	sphereInfo.m_sphere.Center = m_pos + Math::Vector3(0, 0.4f, 0);
+	//デバック
+	m_pDebugWire->AddDebugSphere(spherInfo.m_sphere.Center, spherInfo.m_sphere.Radius);
 
-	//球の半径を設定
-	sphereInfo.m_sphere.Radius = 0.3f;
-
-	//当たり判定したいタイプ設定
-	sphereInfo.m_type = KdCollider::TypeGround;
-
-	m_pDebugWire->AddDebugSphere(sphereInfo.m_sphere.Center, sphereInfo.m_sphere.Radius);
-
-	//球に当たったオブジェクト情報を格納するリスト
+	//球にあたったオブジェクト情報を格納するリスト
 	std::list<KdCollider::CollisionResult> retSphereList;
 
-	//球と当たり判定
+	//球と当たり判定をする!!
 	for (auto& obj : SceneManager::Instance().GetObjList())
 	{
-		obj->Intersects(sphereInfo, &retSphereList);
+		obj->Intersects(spherInfo, &retSphereList);
 	}
 
-	//球に当たったオブジェクトから一番近いオブジェクトを検出
-	maxOverLap = 0;		//レイで使った変数を使い回し
-	hit = false;		//レイで使った変数を使い回し
-	Math::Vector3 hitDir;	//当たった方向
+	//球にあたったリストから一番近いオブジェクトを検出
+	float MaxOverlap = 0.0f;
+	Math::Vector3 hitSphereDir;
+
 	for (auto& ret : retSphereList)
 	{
-		//球にめりこんだ長さが一番長いものを探す
-		if (maxOverLap < ret.m_overlapDistance)
+		if (MaxOverlap < ret.m_overlapDistance)
 		{
-			maxOverLap = ret.m_overlapDistance;
-			hitDir = ret.m_hitDir;		//ここがレイと違う
+			MaxOverlap = ret.m_overlapDistance;
+			hitSphereDir = ret.m_hitDir;
 			hit = true;
 		}
 	}
-
 	if (hit)
 	{
-		//当たってる
-		//Z方向には押し返さないようにする
-		hitDir.z = 0;
-		//正規化（ベクトルの長さを１にする）
-		hitDir.Normalize();
-		//方向をベクトルで管理する時は長さ絶対「１」にする必要がある！！
+		//Z方向への押し出し
+		hitSphereDir.z = 0.0f;
 
-		//押し戻し
-		m_pos += hitDir * maxOverLap;
+		hitSphereDir.Normalize();
+
+		m_pos += hitSphereDir * MaxOverlap;
 	}
-
-
-	//球判定---------------------------------------------
-
 }
 
 void Player::GenerateDepthMapFromLight()
@@ -276,53 +330,45 @@ void Player::DrawUnLit()
 	KdShaderManager::Instance().m_StandardShader.DrawPolygon(m_polygon, m_mWorld);
 }
 
-void Player::MatelialType(bool walk, bool dash, bool atk1, bool atk2, bool atk3, bool jump)
+void Player::MatelialType()
 {
-	if (m_WalkkeyFlg)
+	switch (m_matelialType)
 	{
-
+	case Idle:
+		m_polygon.SetMaterial(TexturePath::Idle);
+		m_polygon.SetSplit(SlideType::Idleslide, 1);
+		break;
+	case Walk:
 		m_polygon.SetMaterial(TexturePath::Walk);
-		m_matelialType = NowMatelialType::Walk;
 		m_polygon.SetSplit(SlideType::Walkslide, 1);
-
-	}
-	else if (m_DashkeyFlg)
-	{
-		
+		break;
+	case Dash:
 		m_polygon.SetMaterial(TexturePath::Run);
-		m_matelialType = NowMatelialType::Dash;
 		m_polygon.SetSplit(SlideType::Dashslide, 1);
-	}
-	else if (atk1)
-	{
+		break;
+	case Atk1:
 		m_polygon.SetMaterial(TexturePath::Attack1);
 		m_matelialType = NowMatelialType::Atk1;
 		m_polygon.SetSplit(SlideType::Atk1slide, 1);
-		
-	}
-	else if (atk2)
-	{
+		break;
+	case Atk2:
 		m_polygon.SetMaterial(TexturePath::Attack2);
 		m_matelialType = NowMatelialType::Atk2;
 		m_polygon.SetSplit(SlideType::Atk2slide, 1);
-	}
-	else if (atk3)
-	{
+		break;
+	case Atk3:
 		m_polygon.SetMaterial(TexturePath::Attack3);
 		m_matelialType = NowMatelialType::Atk3;
 		m_polygon.SetSplit(SlideType::Atk3slide, 1);
-	}
-	else if (jump)
-	{
+		break;
+	case Jump:
 		m_polygon.SetMaterial(TexturePath::Jump);
-		m_matelialType = NowMatelialType::Jump;
 		m_polygon.SetSplit(SlideType::Jumpslide, 1);
-	}
-	else
-	{
-		m_polygon.SetMaterial(TexturePath::Idle);
-		m_matelialType = NowMatelialType::Idle;
-		m_polygon.SetSplit(SlideType::Idleslide, 1);
+		break;
+	case Death:
+		break;
+	default:
+		break;
 	}
 }
 

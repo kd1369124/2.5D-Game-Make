@@ -10,6 +10,7 @@ public:
 	void Update() override;
 	void PreUpdate() override;
 
+
 private:
 
 	std::shared_ptr<KdSquarePolygon> m_pPolygon;

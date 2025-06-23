@@ -6,6 +6,8 @@
 #include"../../Object/Enemy/Enemy.h"
 #include"../../Object/Ground/Ground.h"
 #include"../../Load/JsonLoad.h"
+#include"../../Object/Player/TestPlayer.h"
+#include"../../Object/Enemy/ShotEnemy.h"
 
 void GameScene::Event()
 {
@@ -15,14 +17,13 @@ void GameScene::Event()
 				Math::Matrix::CreateScale(1);
 			Math::Matrix _RotationX =
 				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));*/
-		Math::Vector3 camPos = { 2 , 1 , -15 };
+		Math::Vector3 camPos = { 2 , 1 , -3 };
 		Math::Matrix _Trans =
-			Math::Matrix::CreateTranslation(camPos + player->GetPos());
+			Math::Matrix::CreateTranslation(camPos + testplayer->GetPos());
 
 		//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
 		Math::Matrix _Mat =
 			/*_Scale * _RotationX **/ _Trans;
-
 
 		//カメラに行列をセット
 		//この視点では画面には反映されない
@@ -71,18 +72,20 @@ void GameScene::Init()
 		// プレイヤー初期位置
 		if (node.name == "SteageGoal")
 		{
-			player = std::make_shared<Player>();
-			player->Init();
-			player->SetPos(node.pos * ground->GetScale()); // ← JSONで読み取った位置に設定
-			obj = player;
+			testplayer = std::make_shared<TestPlayer>();
+			testplayer->SetPos(node.pos * ground->GetScale());	// ← JSONで読み取った位置に設定
+			testplayer->Init();
+	
+			obj = testplayer;
 		}
 		// エネミー出現位置
-		else if (node.name.rfind("Enemy", 0) == 0) // "Enemy" で始まる名前
+		else if (node.name.rfind("Enemy", 0) == 0)				// "Enemy" で始まる名前
 		{
-			std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
-			enemy->SetPos(node.pos);
-			enemy->Init();
-			obj = enemy;
+			std::shared_ptr<ShotEnemy> shotenemy = std::make_shared<ShotEnemy>();
+			shotenemy->Init();
+			shotenemy->SetTarget(testplayer);					// ターゲットをプレイヤーに設定
+			shotenemy->SetPos(node.pos);
+			obj = shotenemy;
 		}
 
 		if (obj) { m_objList.push_back(obj); }

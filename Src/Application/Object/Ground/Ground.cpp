@@ -11,7 +11,7 @@ void Ground::Init()
 			
 			Math::Matrix::CreateScale(m_GroundScale);
 		Math::Matrix _Trans =
-			Math::Matrix::CreateTranslation(0, -1, 0);
+			Math::Matrix::CreateTranslation(0, 0, 0);
 
 		m_mWorld = _Scale * _Trans;
 	}

@@ -1,9 +1,32 @@
 ﻿#pragma once
 
 // ゲーム上に存在するすべてのオブジェクトの基底となるクラス
+
+enum EnemyType
+{
+	Nomal,
+	Shot,
+	Shotsamurai,
+	Dog,
+	Boss,
+	NullEnemy,
+
+};
+
+//アニメーション情報
+struct AnimationInfo
+{
+	int start;        //開始コマ
+	int end;        //終了コマ
+	float count;    //現在のコマ
+	float speed;    //アニメーションの速度
+};
+
 class KdGameObject : public std::enable_shared_from_this<KdGameObject>
 {
 public:
+
+
 
 	// どのような描画を行うのかを設定するTypeID：Bitフラグで複数指定可能
 	enum
@@ -38,6 +61,12 @@ public:
 
 	virtual void SetPos(const Math::Vector3& pos) { m_mWorld.Translation(pos); }
 	virtual Math::Vector3 GetPos() const { return m_mWorld.Translation(); }
+
+	EnemyType GetEnemyType() const { return m_enemyType; }
+
+	virtual void onHit(){};
+
+	virtual void SetExpired(bool flg){}
 
 	// 拡大率を変更する関数
 	void SetScale(float scalar);
@@ -86,4 +115,7 @@ protected:
 
 	// デバッグ情報クラス
 	std::unique_ptr<KdDebugWireFrame> m_pDebugWire = nullptr;
+
+	// エネミータイプ情報
+	EnemyType m_enemyType = NullEnemy;
 };

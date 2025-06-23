@@ -88,9 +88,6 @@
     <Filter Include="Src\Application\Load">
       <UniqueIdentifier>{a0085bad-3f94-453e-b072-543bb9bde334}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Load\SCV">
-      <UniqueIdentifier>{69122b29-6ded-4193-b083-619eb80af3d1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\Scene\SelectScene">
       <UniqueIdentifier>{246c6cea-8e77-4f13-854d-8467ac90429c}</UniqueIdentifier>
     </Filter>
@@ -99,6 +96,12 @@
     </Filter>
     <Filter Include="Src\Application\Load\Json Load">
       <UniqueIdentifier>{4bccd641-c791-41ea-9841-136892ff8e4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Load\CSV">
+      <UniqueIdentifier>{69122b29-6ded-4193-b083-619eb80af3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Attack">
+      <UniqueIdentifier>{dccd0481-505d-44a5-8f13-c944129a6232}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +298,15 @@
     <ClInclude Include="Src\Application\Object\Player\Player.h">
       <Filter>Src\Application\Object\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Object\Player\TestPlayer.h">
+      <Filter>Src\Application\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Attack\Attack.h">
+      <Filter>Src\Application\Object\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\ShotEnemy.h">
+      <Filter>Src\Application\Object\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -456,6 +468,15 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Load\JsonLoad.cpp">
       <Filter>Src\Application\Load\Json Load</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Player\TestPlayer.cpp">
+      <Filter>Src\Application\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Attack\Attack.cpp">
+      <Filter>Src\Application\Object\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\ShotEnemy.cpp">
+      <Filter>Src\Application\Object\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

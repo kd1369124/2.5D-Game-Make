@@ -34,7 +34,8 @@ std::vector<NodeData> JsonNodeLoader::LoadNodeS(const std::string& filepath)
 	nlohmann::json json;
 	file >> json;
 
-	for (const auto& node : json["nodes"]) {
+	for (const auto& node : json["nodes"]) 
+	{
 		NodeData data;
 		data.name = node["name"];
 		data.type = node.value("type", "");
