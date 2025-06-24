@@ -44,6 +44,8 @@ void ShotEnemy::Init()
 
 	m_enemyType = EnemyType::Shot;	// 敵の種類を設定
 
+	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
+
 	m_pCollider = std::make_unique<KdCollider>();
 	// 当たり判定の形状を設定
 	m_pCollider->RegisterCollisionShape(
@@ -134,7 +136,11 @@ void ShotEnemy::Update()
 		{
 			m_isExpired = true; // 死亡アニメーションが終了したらオブジェクトを削除
 		}
-		animeCnt = m_animeInfo.start; //コマ数が終了コマを超えたら開始コマに戻す
+		else
+		{
+			animeCnt = m_animeInfo.start; //コマ数が終了コマを超えたら開始コマに戻す
+		}
+		
 	}
 
 	m_polygon->SetUVRect(animeCnt);

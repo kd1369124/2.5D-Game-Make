@@ -33,6 +33,11 @@ public:
 		m_target = target;
 	}
 
+	void SetPos(const Math::Vector3& pos) override
+	{
+		m_pos = pos;
+	}
+
 	void ChangeMatelialType();
 
 	void SetExpired(bool flg)override;

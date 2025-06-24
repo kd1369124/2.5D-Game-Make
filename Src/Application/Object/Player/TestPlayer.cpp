@@ -446,7 +446,7 @@ void TestPlayer::PostUpdate()
 	//レイの発射位置(座標)を設定
 	rayInfo.m_pos = m_pos;
 	//ちょっと上からの位置にする
-	rayInfo.m_pos.y += 0.00f;
+	rayInfo.m_pos.y += 0.1f;
 	//段差の許容範囲を設定
 	float enableStepHigh = 0.2f;
 	rayInfo.m_pos.y += enableStepHigh;

@@ -18,7 +18,7 @@ void GameScene::Event()
 			Math::Matrix _RotationX =
 				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));*/
 
-			Math::Vector3 camPos = { 1 + testplayer->GetPos().x , 2 , -3 + testplayer->GetPos().z};
+			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,2  , -3 + testplayer->GetPos().z};
 			Math::Matrix _Trans =
 				Math::Matrix::CreateTranslation(camPos);
 
@@ -97,7 +97,7 @@ void GameScene::Init()
 
 	
 		// ノード情報の読み込み
-		auto nodes = JsonNodeLoader::LoadNodes("Asset/Models/nodes.json");
+		auto nodes = JsonNodeLoader::LoadNodeS("Asset/Models/nodes.json");
 
 		for (const auto& node : nodes)
 		{
@@ -106,7 +106,7 @@ void GameScene::Init()
 			{
 				testplayer = std::make_shared<TestPlayer>();
 				testplayer->Init();
-				testplayer->SetPos({node.pos * ground->GetScale()});
+				testplayer->SetPos(node.pos * ground->GetScale());
 				AddObject(testplayer);
 			}
 			// ゴールオブジェクト配置（必要に応じて）
@@ -140,7 +140,7 @@ void GameScene::Init()
 				}
 			}
 		}
-	
+	int a = 0;
 	
 	//=================================================
 
