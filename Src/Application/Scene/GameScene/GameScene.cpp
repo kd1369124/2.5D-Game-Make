@@ -134,6 +134,7 @@ void GameScene::Init()
 
 				if (enemy)
 				{
+
 					enemy->Init();
 					enemy->SetPos(node.pos * ground->GetScale());
 					m_objList.push_back(enemy);

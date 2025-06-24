@@ -14,13 +14,12 @@ namespace TexturePath
 	const std::string Attack3	= "Asset/Textures/Ninja_Peasant/Shot.png";
 	const std::string Damege	= "Asset/Textures/Ninja_Peasant/Hurt.png";
 }
-
 void ShotEnemy::Init()
 {
 	m_polygon = std::make_shared<KdSquarePolygon>();	// ポリゴンを生成
 	m_polygon->SetMaterial(TexturePath::Idle);						// マテリアルを設定
-	m_polygon->SetUVRect(6, 1);	// UVを0に設定
-	m_polygon->SetScale(2);											// ポリゴンのスケールを設定
+	m_polygon->SetSplit(6, 1);
+	m_polygon->SetScale(2.5);											// ポリゴンのスケールを設定
 	m_polygon->SetPivot(KdSquarePolygon::PivotType::Center_Bottom);	// ポリゴンのピボットを設定
 
 	m_pos = {};							// 初期位置を設定
@@ -39,7 +38,7 @@ void ShotEnemy::Init()
 
 	//アニメーション初期化
 	m_animeInfo.start	= 0.0f;	//開始コマを0.0fで初期化
-	m_animeInfo.end		= 5.0f;		//終了コマを0.0fで初期化
+	m_animeInfo.end		= 5.0f;	//終了コマを0.0fで初期化
 	m_animeInfo.count	= 0.0f;	//現在のコマ数カウントを0.0fで初期化
 	m_animeInfo.speed	= 0.2f;	//アニメーション速度を0.0fで初期化
 
@@ -61,6 +60,24 @@ void ShotEnemy::Update()
 
 	NowMatelialType oldMatelialType = m_matelialType;
 
+	////アニメーションの更新作業
+	m_animeInfo.count += m_animeInfo.speed;    //コマ数を加算
+
+	int animeCnt = static_cast<int>(m_animeInfo.start + m_animeInfo.count);
+
+	if (animeCnt > m_animeInfo.end)
+	{
+		if ((animeCnt > m_animeInfo.end) && m_matelialType == NowMatelialType::Death)
+		{
+			m_isExpired = true; // 死亡アニメーションが終了したらオブジェクトを削除
+		}
+		else
+		{
+			animeCnt = m_animeInfo.start; //コマ数が終了コマを超えたら開始コマに戻す
+			m_animeInfo.count = 0.0f; //アニメーションのカウントをリセット
+		}
+
+	}
 
 
 	// ==========================================
@@ -127,23 +144,7 @@ void ShotEnemy::Update()
 		m_animeInfo.count = 0.0f; //アニメーションをリセット
 		ChangeMatelialType();
 	}
-	m_animeInfo.count += m_animeInfo.speed;    //コマ数を加算
-
-	int animeCnt = static_cast<int>(m_animeInfo.start + m_animeInfo.count);
-
-	if(animeCnt > m_animeInfo.end)
-	{
-		if ((animeCnt > m_animeInfo.end) && m_matelialType == NowMatelialType::Death)
-		{
-			m_isExpired = true; // 死亡アニメーションが終了したらオブジェクトを削除
-		}
-		else
-		{
-			animeCnt = m_animeInfo.start; //コマ数が終了コマを超えたら開始コマに戻す
-		}
-		
-	}
-
+	
 	m_polygon->SetUVRect(animeCnt);
 	m_pos += m_dir * m_speed;
 	// 行列関係
