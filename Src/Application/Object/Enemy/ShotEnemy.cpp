@@ -19,6 +19,7 @@ void ShotEnemy::Init()
 {
 	m_polygon = std::make_shared<KdSquarePolygon>();	// ポリゴンを生成
 	m_polygon->SetMaterial(TexturePath::Idle);						// マテリアルを設定
+	m_polygon->SetUVRect(6, 1);	// UVを0に設定
 	m_polygon->SetScale(2);											// ポリゴンのスケールを設定
 	m_polygon->SetPivot(KdSquarePolygon::PivotType::Center_Bottom);	// ポリゴンのピボットを設定
 
@@ -38,9 +39,9 @@ void ShotEnemy::Init()
 
 	//アニメーション初期化
 	m_animeInfo.start	= 0.0f;	//開始コマを0.0fで初期化
-	m_animeInfo.end		= 0.0f;		//終了コマを0.0fで初期化
+	m_animeInfo.end		= 5.0f;		//終了コマを0.0fで初期化
 	m_animeInfo.count	= 0.0f;	//現在のコマ数カウントを0.0fで初期化
-	m_animeInfo.speed	= 0.0f;	//アニメーション速度を0.0fで初期化
+	m_animeInfo.speed	= 0.2f;	//アニメーション速度を0.0fで初期化
 
 	m_enemyType = EnemyType::Shot;	// 敵の種類を設定
 
