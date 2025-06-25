@@ -13,18 +13,24 @@ void GameScene::Event()
 
 	//カメラ制御
 	{
-		/*	Math::Matrix _Scale =
+			Math::Matrix _Scale =
 				Math::Matrix::CreateScale(1);
 			Math::Matrix _RotationX =
-				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));*/
+				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));
 
-			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,2  , -3 + testplayer->GetPos().z};
+			Math::Matrix _RotationY =
+				Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(0));
+
+			Math::Matrix _RotationZ =
+				Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(0));
+
+			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,2  , -5 + testplayer->GetPos().z};
 			Math::Matrix _Trans =
 				Math::Matrix::CreateTranslation(camPos);
 
 			//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
 			Math::Matrix _Mat =
-				/*_Scale * _RotationX **/ _Trans;
+				_Scale *( _RotationX * _RotationY * _RotationZ )* _Trans;
 
 			//カメラに行列をセット
 			//この視点では画面には反映されない
