@@ -142,6 +142,7 @@ void GameScene::Init()
 
 				if (enemy)
 				{
+
 					enemy->Init();
 					enemy->SetPos((Math::Vector3(node.pos.x,node.pos.z,node.pos.y) * ground->GetScale()));
 					m_objList.push_back(enemy);

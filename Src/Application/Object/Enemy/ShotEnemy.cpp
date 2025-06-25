@@ -14,7 +14,6 @@ namespace TexturePath
 	const std::string Attack3	= "Asset/Textures/Ninja_Peasant/Shot.png";
 	const std::string Damege	= "Asset/Textures/Ninja_Peasant/Hurt.png";
 }
-
 void ShotEnemy::Init()
 {
 	m_polygon = std::make_shared<KdSquarePolygon>();	// ポリゴンを生成
