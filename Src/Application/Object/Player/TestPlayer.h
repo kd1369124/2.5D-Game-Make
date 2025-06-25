@@ -31,6 +31,10 @@ private:
 	Math::Vector3 m_pos;
 	Math::Vector3 m_move;
 
+	Math::Vector3 m_dir;
+
+	float m_speed = 0.0f;
+
 	//gravity
 	float m_gravity;
 	bool Left;
@@ -42,4 +46,9 @@ private:
 	bool RunFlg;
 	bool JumpFlg;
 	bool KeyFlg;
+	bool ZmovepulsFlg = NULL;
+	bool ZKeyFlg;
+	bool ZmoveminusFlg = NULL;	
+	bool m_direction = true; // true:右, false:左
+
 };

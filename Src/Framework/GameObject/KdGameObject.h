@@ -79,7 +79,7 @@ public:
 
 	ObjctType GetObjectType() const { return m_objectType; }
 
-	virtual void onHit(){};
+	virtual void onHit(){}
 
 	virtual void SetExpired(bool flg){}
 

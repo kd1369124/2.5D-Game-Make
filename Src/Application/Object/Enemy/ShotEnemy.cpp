@@ -49,11 +49,15 @@ void ShotEnemy::Init()
 	m_pCollider = std::make_unique<KdCollider>();
 	// 当たり判定の形状を設定
 	m_pCollider->RegisterCollisionShape(
-		"ShotEnemyCollision",			// 当たり判定の名称
-		m_polygon,
-		KdCollider::TypeDamage);		// 当たり判定の種類
+		"EnemyCollision",
+		Math::Vector3(0, 0.5, 0),    // 球の中心座標（原点からの位置）
+		m_attackarea,                        // 球の半径
+		KdCollider::TypeDamage        // 当たり判定のタイプ
+	);
 
 	m_objectType = ObjctType::Enemy;	// オブジェクトの種類を設定
+
+	m_hp = 100;						// HPを設定
 }
 void ShotEnemy::Update()
 {
@@ -345,6 +349,9 @@ void ShotEnemy::SetExpired(bool flg)
 
 void ShotEnemy::onHit()
 {
+	m_hp -= 30;
+
+
 	if (m_hp <= 0)
 	{
 		m_polygon->SetMaterial(TexturePath::Dead);		// ダメージを受けたらマテリアルを変更
@@ -355,6 +362,5 @@ void ShotEnemy::onHit()
 		m_polygon->SetMaterial(TexturePath::Damege);	// ダメージを受けたらマテリアルを変更
 		m_matelialType = NowMatelialType::Damege;		// マテリアルの種類をDamegeに変更
 		m_animeInfo.end = 1;							// アニメーションの終了コマを2にする
-		m_hp -= 30;
 	}
 }

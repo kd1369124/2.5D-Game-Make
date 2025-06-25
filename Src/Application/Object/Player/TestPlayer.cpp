@@ -1,6 +1,6 @@
 ﻿#include "TestPlayer.h"
 #include "../../Scene/SceneManager.h"
-
+#include"../Attack/Attack.h"
 void TestPlayer::Init()
 {
 	//デバック用
@@ -23,6 +23,11 @@ void TestPlayer::Init()
 
 	//防御Flgをtrueで初期化
 	GuardFlg = false;
+
+	ZKeyFlg = false; //Zキーを押しているかのフラグをfalseで初期化
+	ZmovepulsFlg = NULL;
+	m_direction = true; // true:右, false:左
+
 
 	//移動関係Flgをfalseで初期化
 	{
@@ -54,8 +59,7 @@ void TestPlayer::Init()
 
 void TestPlayer::Update()
 {
-	m_pos += m_move;
-	m_move.x = 0;
+	m_dir = {};
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	//待機状態の処理　ここから
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -102,14 +106,171 @@ void TestPlayer::Update()
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	//移動の処理　ここから
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+	if ((GetAsyncKeyState('W') & 0x8000))
 	{
+		ZKeyFlg = true;
+		ZmovepulsFlg = true;
+		//シフトボタンと右クリックを押していないとき
+		if (!(GetAsyncKeyState(VK_SHIFT) & 0x8000) && !(GetAsyncKeyState(VK_RBUTTON) & 0x8000))
+		{
+			//RunFlgをfalseにする
+			RunFlg = false;
+			//WalkFlgをtrueにする
+			WalkFlg = true;
+		}
+		//またはシフトボタンと右クリックを押しているとき
+		else if ((GetAsyncKeyState(VK_SHIFT) & 0x8000) || (GetAsyncKeyState(VK_RBUTTON) & 0x8000))
+		{
+			//WalkFlgをfalseにする
+			WalkFlg = false;
+			//RunFlgをtrueにする
+			RunFlg = true;
+		}
+		//WalkFlgがtrueで左向きなら
+		if (WalkFlg && Left)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をLeftWalk.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Walk/LeftWalk.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.08f;
+			//m_pos.xに0.02fを引き続ける
+			m_dir += {0, 0, 1};
+		}
+		//RunFlgがtrueで左向きなら
+		if (RunFlg && Left)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をRightRun.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Run/LeftRun.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.15f;
+			//m_pos.xに0.05fを引き続ける
+			m_dir += {0, 0, 1};
+		}
+		if (WalkFlg && Right)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をRightWalk.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Walk/RightWalk.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.08f;
+			//m_pos.xに0.02fを足し続ける
+			m_dir += {0, 0, 1};
+		}
+		//RunFlgがtrueで右向きなら
+		if (RunFlg && Right)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をRightRun.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Run/RightRun.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.15f;
+			//m_pos.xに0.05fを足し続ける
+			m_dir += {0, 0, 1};
+		}
+	}
+	if ((GetAsyncKeyState('S') & 0x8000))
+	{
+		ZKeyFlg = true;
+		ZmovepulsFlg = false;
+		//シフトボタンと右クリックを押していないとき
+		if (!(GetAsyncKeyState(VK_SHIFT) & 0x8000) && !(GetAsyncKeyState(VK_RBUTTON) & 0x8000))
+		{
+			//RunFlgをfalseにする
+			RunFlg = false;
+			//WalkFlgをtrueにする
+			WalkFlg = true;
+		}
+		//またはシフトボタンと右クリックを押しているとき
+		else if ((GetAsyncKeyState(VK_SHIFT) & 0x8000) || (GetAsyncKeyState(VK_RBUTTON) & 0x8000))
+		{
+			//WalkFlgをfalseにする
+			WalkFlg = false;
+			//RunFlgをtrueにする
+			RunFlg = true;
+		}
+		if (WalkFlg && Right)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をRightWalk.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Walk/RightWalk.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.08f;
+
+			m_dir += {0, 0, -1};
+		}
+		//RunFlgがtrueで右向きなら
+		if (RunFlg && Right)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をRightRun.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Run/RightRun.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.15f;
+			//m_pos.xに0.05fを足し続ける
+			m_dir += {0, 0, -1};
+		}
+		if (WalkFlg && Left)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をLeftWalk.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Walk/LeftWalk.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.08f;
+			//m_pos.xに0.02fを引き続ける
+			m_dir += {0, 0, -1};
+		}
+		//RunFlgがtrueで左向きなら
+		if (RunFlg && Left)
+		{
+			//横8　縦１に画像を分割
+			m_polygon->SetSplit(8, 1);
+			//板ポリに張り付けてる画像をRightRun.pngにする
+			m_polygon->SetMaterial("Asset/Textures/Chara/Run/LeftRun.png");
+			//終了コマを7コマ目にする
+			m_animeInfo.end = 7;
+			//アニメーション速度を0.08fにする
+			m_animeInfo.speed = 0.15f;
+			//m_pos.xに0.05fを引き続ける
+			m_dir += {0, 0,-1};
+		}
+	}
+	else if (!(GetAsyncKeyState('S') & 0x8000) && !(GetAsyncKeyState('W') & 0x8000))
+	{
+		ZKeyFlg = false; //Zキーを押しているフラグをfalseにする
+		ZmovepulsFlg = NULL;
+	}
+	
 		// 左方向への移動処理ここから
 		//Aキーを押しているとき
 		if ((GetAsyncKeyState('A') & 0x8000))
 		{
 			//IdleFlgをfalseにする
 			IdleFlg = false;
-
+			m_direction = false; // 向きを左に設定
 			//向いている方向を左に設定
 			{
 				Left = true;
@@ -143,7 +304,7 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.08f;
 				//m_pos.xに0.02fを引き続ける
-				m_move.x -= 0.03f;
+				m_dir += {-1, 0, 0};
 			}
 			//RunFlgがtrueで左向きなら
 			if (RunFlg && Left)
@@ -157,7 +318,7 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.15f;
 				//m_pos.xに0.05fを引き続ける
-				m_move.x -= 0.06f;
+				m_dir += {-1, 0, 0};
 			}
 		}
 		else
@@ -176,6 +337,7 @@ void TestPlayer::Update()
 		{
 			//IdleFlgをfalseにする
 			IdleFlg = false;
+			m_direction = true; // 向きを右に設定
 			//向いている方向を右に設定
 			{
 				Right = true;
@@ -209,7 +371,7 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.08f;
 				//m_pos.xに0.02fを足し続ける
-				m_move.x += 0.03f;
+				m_dir += {1, 0, 0};
 			}
 			//RunFlgがtrueで右向きなら
 			if (RunFlg && Right)
@@ -223,8 +385,10 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.15f;
 				//m_pos.xに0.05fを足し続ける
-				m_move.x += 0.06f;
+				m_dir += {1, 0, 0};
 			}
+
+			
 		}
 		else
 		{
@@ -235,7 +399,8 @@ void TestPlayer::Update()
 			}
 		}
 		//右方向への処理ここまで
-	}
+
+	
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	//移動の処理　ここまで
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -417,19 +582,77 @@ void TestPlayer::Update()
 			m_animeInfo.count = 1;	//コマ数を3に固定
 		}
 	}
-
-
 	//UV設定
 	m_polygon->SetUVRect(animeCnt);
+
+	if (WalkFlg)
+	{
+		m_speed = 0.03;
+	}
+	else if (RunFlg)
+	{
+		m_speed = 0.06;
+	}
+	m_dir.Normalize();
+	if (AtkFlg)
+	{
+		// 攻撃オブジェクトを出現させる座標を確定させる
+		Math::Vector3 attackPos = {};
+		attackPos = m_pos;			// プレイヤーの座標を基準にする
+		attackPos += m_dir * 0.1;	// 攻撃方向に0.4だけずらす
+		// 攻撃オブジェクトを作成
+		std::shared_ptr<Attack> attack;
+		attack = std::make_shared<Attack>();
+		attack->Init();									// 初期化
+		attack->SetDirection(m_direction);				// 向きをセット
+		attack->SetPos(attackPos);						// 座標をセット
+		SceneManager::Instance().AddObject(attack);		// シーンに追加
+	}
+
 	//重力処理
 	m_pos.y -= m_gravity;
 	m_gravity += 0.005f;//重力加速
+
+	float rotY = 0.0f; //Y軸回転角度
+
+	if (ZmovepulsFlg && ZKeyFlg)
+	{
+		if (m_direction)
+		{
+			rotY = -45.0f;
+			m_dir += {0, 0, 1};//Zキーを押しているときは前に進む
+		}
+		if (!m_direction)
+		{
+			rotY = 314.5f; //Zキーを押しているときは45度回転
+			m_dir += {0, 0, 1};//Zキーを押しているときは前に進む
+		}
+	}
+	else if (!ZmovepulsFlg && ZKeyFlg)
+	{
+		if (m_direction)
+		{
+			rotY = 314.5f;
+			m_dir += {0, 0, -1};//Zキーを押しているときは前に進む
+		}
+		if (!m_direction)
+		{
+			rotY = -45.0f; //Zキーを押しているときは45度回転
+			m_dir += {0, 0, -1};//Zキーを押しているときは前に進む
+		}
+	}
+	
+
+	
+	m_pos += m_dir * m_speed;
+	
+	Math::Matrix RotY = Math::Matrix::CreateRotationY(rotY);
 
 	//プレイヤーの座標行列
 	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
 
 	//行列の合成
-	m_mWorld = transMat;
+	m_mWorld = RotY * transMat;
 
 }
 void TestPlayer::PostUpdate()

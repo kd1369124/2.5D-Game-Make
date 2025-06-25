@@ -17,7 +17,7 @@ void GameScene::Event()
 			Math::Matrix _Scale =
 				Math::Matrix::CreateScale(1);
 			Math::Matrix _RotationX =
-				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(30));
+				Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(0));
 
 			Math::Matrix _RotationY =
 				Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(0));
@@ -25,7 +25,7 @@ void GameScene::Event()
 			Math::Matrix _RotationZ =
 				Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(0));
 
-			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,2  , -3 + testplayer->GetPos().z};
+			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,1.5  , -3 + testplayer->GetPos().z};
 			Math::Matrix _Trans =
 				Math::Matrix::CreateTranslation(camPos);
 
@@ -39,6 +39,9 @@ void GameScene::Event()
 		
 
 	}
+
+
+
 	
 	if (GetAsyncKeyState('T') & 0x8000)
 	{
