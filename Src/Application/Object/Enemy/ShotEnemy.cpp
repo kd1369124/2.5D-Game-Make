@@ -19,7 +19,8 @@ void ShotEnemy::Init()
 {
 	m_polygon = std::make_shared<KdSquarePolygon>();	// ポリゴンを生成
 	m_polygon->SetMaterial(TexturePath::Idle);						// マテリアルを設定
-	m_polygon->SetScale(2);											// ポリゴンのスケールを設定
+	m_polygon->SetSplit(6, 1);
+	m_polygon->SetScale(1);											// ポリゴンのスケールを設定
 	m_polygon->SetPivot(KdSquarePolygon::PivotType::Center_Bottom);	// ポリゴンのピボットを設定
 
 	m_pos = {};							// 初期位置を設定
@@ -28,7 +29,7 @@ void ShotEnemy::Init()
 	m_searchArea = 4.0f;					// プレイヤー検知範囲の半径を設定
 	m_dashthArea = 2.0f;				// ダッシュ攻撃範囲の半径を設定
 	m_attackarea = 0.7f;				// 攻撃範囲の半径を設定
-	m_speed = 0.3f;					// 移動速度を設定
+	m_speed = 0.04f;					// 移動速度を設定
 	m_direction = true;				// 右向きに設定
 	m_matelialType = NowMatelialType::Idle;	// マテリアルの種類を初期化
 	m_chaseFlg = false;				// 追尾フラグを初期化
@@ -38,9 +39,9 @@ void ShotEnemy::Init()
 
 	//アニメーション初期化
 	m_animeInfo.start	= 0.0f;	//開始コマを0.0fで初期化
-	m_animeInfo.end		= 0.0f;		//終了コマを0.0fで初期化
+	m_animeInfo.end		= 5.0f;		//終了コマを0.0fで初期化
 	m_animeInfo.count	= 0.0f;	//現在のコマ数カウントを0.0fで初期化
-	m_animeInfo.speed	= 0.0f;	//アニメーション速度を0.0fで初期化
+	m_animeInfo.speed	= 0.2f;	//アニメーション速度を0.0fで初期化
 
 	m_enemyType = EnemyType::Shot;	// 敵の種類を設定
 
@@ -52,6 +53,8 @@ void ShotEnemy::Init()
 		"ShotEnemyCollision",			// 当たり判定の名称
 		m_polygon,
 		KdCollider::TypeDamage);		// 当たり判定の種類
+
+	m_objectType = ObjctType::Enemy;	// オブジェクトの種類を設定
 }
 void ShotEnemy::Update()
 {
@@ -60,7 +63,21 @@ void ShotEnemy::Update()
 
 	NowMatelialType oldMatelialType = m_matelialType;
 
+	m_animeInfo.count += m_animeInfo.speed;    //コマ数を加算
 
+	int animeCnt = static_cast<int>(m_animeInfo.start + m_animeInfo.count);
+
+	if (animeCnt > m_animeInfo.end)
+	{
+		if ((animeCnt > m_animeInfo.end) && m_matelialType == NowMatelialType::Death)
+		{
+			m_isExpired = true; // 死亡アニメーションが終了したらオブジェクトを削除
+		}
+
+			animeCnt = m_animeInfo.start; //コマ数が終了コマを超えたら開始コマに戻す
+		m_animeInfo.count = 0.0f; //アニメーションのカウントをリセット
+
+	}
 
 	// ==========================================
 	// 追尾対象が一定範囲にいるか？
@@ -79,14 +96,16 @@ void ShotEnemy::Update()
 		{
 			if (v.Length() < m_dashthArea)
 			{
-				RunFlg = true; // ダッシュフラグを立てる
+				//RunFlg = true; // ダッシュフラグを立てる
 			}
 			m_chaseFlg = true;
+			m_matelialType = NowMatelialType::Dash;
 		}
 		else
 		{
 			m_chaseFlg = false;
 			IdleFlg = true; // 追尾対象がいないのでアイドル状態にする
+			m_matelialType = NowMatelialType::Idle; // マテリアルをアイドルに変更
 		}
 		// 追尾フラグONの場合は追尾する
 		if (m_chaseFlg)
@@ -94,7 +113,7 @@ void ShotEnemy::Update()
 			// y軸を 0 にしておく　※空飛んで追いかけるの防止
 			v.y = 0.0f;
 			// 対象との距離で正規化前に攻撃か移動のみか射撃か判別する
-			if ((v.x < m_attackarea) && RunFlg )
+			if (v.x < m_attackarea )
 			{
 				AtkFlg = true; // 攻撃フラグを立てる
 			}
@@ -126,22 +145,9 @@ void ShotEnemy::Update()
 		m_animeInfo.count = 0.0f; //アニメーションをリセット
 		ChangeMatelialType();
 	}
-	m_animeInfo.count += m_animeInfo.speed;    //コマ数を加算
 
-	int animeCnt = static_cast<int>(m_animeInfo.start + m_animeInfo.count);
-
-	if(animeCnt > m_animeInfo.end)
-	{
-		if ((animeCnt > m_animeInfo.end) && m_matelialType == NowMatelialType::Death)
-		{
-			m_isExpired = true; // 死亡アニメーションが終了したらオブジェクトを削除
-		}
-		else
-		{
-			animeCnt = m_animeInfo.start; //コマ数が終了コマを超えたら開始コマに戻す
-		}
-		
-	}
+	m_pos.y -= m_gravity;
+	m_gravity += 0.05f;
 
 	m_polygon->SetUVRect(animeCnt);
 	m_pos += m_dir * m_speed;
@@ -196,7 +202,109 @@ void ShotEnemy::Update()
 }
 void ShotEnemy::PostUpdate()
 {
+	//========================
+//当たる側の処理
+//========================
 
+//========================
+//レイ判定
+//========================
+//レイ判定用に変数を作成
+	KdCollider::RayInfo rayInfo;
+	//レイの発射位置(座標)を設定
+	rayInfo.m_pos = m_pos;
+	//ちょっと上からの位置にする
+	rayInfo.m_pos.y = 0.25f;
+	//段差の許容範囲を設定
+	float enableStepHigh = 0.2f;
+	rayInfo.m_pos.y += enableStepHigh;
+	//レイの発射方向
+	rayInfo.m_dir = { 0,-1,0 }; //今回のみ下方向
+	//レイの長さを設定
+	rayInfo.m_range = m_gravity + enableStepHigh;
+	//当たり判定をしたいタイプを設定
+	rayInfo.m_type = KdCollider::TypeGround;
+
+	//デバック
+	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range);
+
+	//レイに当たったオブジェクト情報を格納するリスト
+	std::list<KdCollider::CollisionResult> retRayList;
+
+	//レイと当たり判定をする!!
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		obj->Intersects(rayInfo, &retRayList);
+	}
+
+	//レイに一番近い
+	float maxOverlap = 0.0f;
+	Math::Vector3 hitPos;
+	bool hit = false;
+
+	for (auto& ret : retRayList)
+	{
+		//レイを遮断しオーバーした長さが一番長いものを探す
+		if (maxOverlap < ret.m_overlapDistance)
+		{
+			//更新
+			maxOverlap = ret.m_overlapDistance;
+			hitPos = ret.m_hitPos;
+			hit = true;
+		}
+	}
+	if (hit)
+	{
+		//当たっていたら
+		m_pos = hitPos + Math::Vector3(0, -0.1f, 0);
+		m_gravity = 0.0f;
+	}
+	//========================
+	//球判定
+	//========================
+	//球判定用変数
+	KdCollider::SphereInfo spherInfo;
+	//球の中心座標
+	spherInfo.m_sphere.Center = m_pos + Math::Vector3(0, 0.75f, 0);
+	//球の半径
+	spherInfo.m_sphere.Radius = 0.55f;
+	//当たり判定したいタイプを設定
+	spherInfo.m_type = KdCollider::TypeGround;
+
+	//デバック
+	m_pDebugWire->AddDebugSphere(spherInfo.m_sphere.Center, spherInfo.m_sphere.Radius);
+
+	//球にあたったオブジェクト情報を格納するリスト
+	std::list<KdCollider::CollisionResult> retSphereList;
+
+	//球と当たり判定をする!!
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		obj->Intersects(spherInfo, &retSphereList);
+	}
+
+	//球にあたったリストから一番近いオブジェクトを検出
+	float MaxOverlap = 0.0f;
+	Math::Vector3 hitSphereDir;
+
+	for (auto& ret : retSphereList)
+	{
+		if (MaxOverlap < ret.m_overlapDistance)
+		{
+			MaxOverlap = ret.m_overlapDistance;
+			hitSphereDir = ret.m_hitDir;
+			hit = true;
+		}
+	}
+	if (hit)
+	{
+		//Z方向への押し出し
+		hitSphereDir.z = 0.0f;
+
+		hitSphereDir.Normalize();
+
+		m_pos += hitSphereDir * MaxOverlap;
+	}
 }
 void ShotEnemy::DrawLit()
 {
@@ -213,14 +321,20 @@ void ShotEnemy::ChangeMatelialType()
 	if (m_matelialType == NowMatelialType::Idle)
 	{
 		m_polygon->SetMaterial(TexturePath::Idle);
-		m_polygon->SetUVRect(6,1);	// UVを0に設定
+		m_polygon->SetSplit(6,1);	// UVを0に設定
 		m_animeInfo.end = 5;
 	}
 	if (m_matelialType == NowMatelialType::Walk)
 	{
 		m_polygon->SetMaterial(TexturePath::Walk);
-		m_polygon->SetUVRect(8, 1);	// UVを0に設定
+		m_polygon->SetSplit(8, 1);	// UVを0に設定
 		m_animeInfo.end = 7;	// アニメーションの終了コマを6にする
+	}
+	if (m_matelialType == NowMatelialType::Dash)
+	{
+		m_polygon->SetMaterial(TexturePath::Run);
+		m_polygon->SetSplit(6, 1);	// UVを0に設定
+		m_animeInfo.end = 5;	// アニメーションの終了コマを6にする
 	}
 
 }
