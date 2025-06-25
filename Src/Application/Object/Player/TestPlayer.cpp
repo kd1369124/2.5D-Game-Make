@@ -31,8 +31,8 @@ void TestPlayer::Init()
 	}
 
 	//プレイヤーの初期位置を{-55.0f,2.0f,0.0f}で初期化
-	m_pos = { -55.0f,2.0f,0.0f };
-	m_move = { 0,0,0 };
+	m_pos = { };
+	m_move = {};
 
 	//プレイヤーの大きさを2で初期化
 
@@ -143,7 +143,7 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.08f;
 				//m_pos.xに0.02fを引き続ける
-				m_move.x -= 0.02f;
+				m_move.x -= 0.03f;
 			}
 			//RunFlgがtrueで左向きなら
 			if (RunFlg && Left)
@@ -157,7 +157,7 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.15f;
 				//m_pos.xに0.05fを引き続ける
-				m_move.x -= 0.05f;
+				m_move.x -= 0.06f;
 			}
 		}
 		else
@@ -209,7 +209,7 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.08f;
 				//m_pos.xに0.02fを足し続ける
-				m_move.x += 0.02f;
+				m_move.x += 0.03f;
 			}
 			//RunFlgがtrueで右向きなら
 			if (RunFlg && Right)
@@ -223,7 +223,7 @@ void TestPlayer::Update()
 				//アニメーション速度を0.08fにする
 				m_animeInfo.speed = 0.15f;
 				//m_pos.xに0.05fを足し続ける
-				m_move.x += 0.07f;
+				m_move.x += 0.06f;
 			}
 		}
 		else

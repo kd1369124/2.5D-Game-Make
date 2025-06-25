@@ -5,7 +5,7 @@ void Ground::Init()
 	{
 		m_model = std::make_shared<KdModelData>();
 		m_model->Load("Asset/Models/Test.gltf");
-		m_GroundScale = { 1.0f,1.0f,1.0f };
+		m_GroundScale = { 1.0f,1.0f,0.4f };
 		//行列
 		Math::Matrix _Scale =
 			

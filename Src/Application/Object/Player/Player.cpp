@@ -111,36 +111,6 @@ void Player::Update()
 		m_animeInfo.count = 0.0f; //アニメーションのコマをリセット
 	}
 
-	switch (m_matelialType)
-	{
-	case Idle:
-		m_animeInfo.end = 5;
-		m_animeInfo.speed = 0.1f;
-		break;
-	case Walk:
-		m_animeInfo.end = 7;
-		m_animeInfo.speed = 0.1f;
-		break;
-	case Dash:
-		m_animeInfo.end = 7;
-		m_animeInfo.speed = 0.2f;
-		break;
-	case Atk1:
-		break;
-	case Atk2:
-		break;
-	case Atk3:
-		break;
-	case Jump:
-		m_animeInfo.end = 11;
-		m_animeInfo.speed = 0.1f;
-		break;
-	case Death:
-		break;
-	default:
-		break;
-	}
-
 	MatelialType();
 
 	m_pos.y -= m_gravity;

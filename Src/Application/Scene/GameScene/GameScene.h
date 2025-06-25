@@ -5,7 +5,7 @@ class Player;
 class Ground;
 class NomalBack;
 class TestPlayer;
-
+class KdGameObject;
 class GameScene : public BaseScene
 {
 public :

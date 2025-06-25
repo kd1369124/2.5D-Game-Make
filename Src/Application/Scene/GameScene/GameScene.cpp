@@ -7,6 +7,7 @@
 #include"../../Load/JsonLoad.h"
 #include"../../Object/Player/TestPlayer.h"
 #include"../../Object/Enemy/ShotEnemy.h"
+#include"../../../Framework/GameObject/KdGameObject.h"
 
 void GameScene::Event()
 {
@@ -24,13 +25,13 @@ void GameScene::Event()
 			Math::Matrix _RotationZ =
 				Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(0));
 
-			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,2  , -5 + testplayer->GetPos().z};
+			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,2  , -3 + testplayer->GetPos().z};
 			Math::Matrix _Trans =
 				Math::Matrix::CreateTranslation(camPos);
 
 			//行列を合成（ 拡縮 ＊ 回転 ＊ 座標 ）
 			Math::Matrix _Mat =
-				_Scale *( _RotationX * _RotationY * _RotationZ )* _Trans;
+				_Scale * (_RotationX * _RotationY * _RotationZ )* _Trans;
 
 			//カメラに行列をセット
 			//この視点では画面には反映されない
@@ -68,6 +69,7 @@ void GameScene::Init()
 	m_objList.push_back(nBack);
 	//=================================================
 	
+
 
 	//===============ノード読み込み=====================
 	//auto nodes = JsonNodeLoader::LoadNodes("Asset/JsonData/nodes2.json"); 
@@ -112,7 +114,7 @@ void GameScene::Init()
 			{
 				testplayer = std::make_shared<TestPlayer>();
 				testplayer->Init();
-				testplayer->SetPos(node.pos * ground->GetScale());
+				testplayer->SetPos((Math::Vector3(node.pos.x, node.pos.z, node.pos.y)) * ground->GetScale());
 				AddObject(testplayer);
 			}
 			// ゴールオブジェクト配置（必要に応じて）
@@ -142,15 +144,24 @@ void GameScene::Init()
 				{
 
 					enemy->Init();
-					enemy->SetPos(node.pos * ground->GetScale());
+					enemy->SetPos((Math::Vector3(node.pos.x,node.pos.z,node.pos.y) * ground->GetScale()));
 					m_objList.push_back(enemy);
 				}
 			}
 		}
 	int a = 0;
 	
-	//=================================================
-
+	for (const auto& obj : m_objList)
+	{
+		if (obj->GetObjectType() == KdGameObject::ObjctType::Enemy)
+		{
+			obj->SetTarget(testplayer);
+		}
+		else if (obj->GetObjectType() == KdGameObject::ObjctType::Player)
+		{
+			
+		}
+	}
 
 	//==============プレイヤー初期化===================
 	//player = std::make_shared<Player>();

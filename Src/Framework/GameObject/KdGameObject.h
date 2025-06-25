@@ -26,6 +26,14 @@ class KdGameObject : public std::enable_shared_from_this<KdGameObject>
 {
 public:
 
+	enum class ObjctType 
+	{
+		Player,        // プレイヤー
+		Enemy,         // エネミー     
+		Bullet,       // プレイヤーまたはエネミーの弾
+		Null,          // 無効なオブジェクト
+
+	};
 
 
 	// どのような描画を行うのかを設定するTypeID：Bitフラグで複数指定可能
@@ -62,7 +70,14 @@ public:
 	virtual void SetPos(const Math::Vector3& pos) { m_mWorld.Translation(pos); }
 	virtual Math::Vector3 GetPos() const { return m_mWorld.Translation(); }
 
+	virtual void SetTarget(std::shared_ptr<KdGameObject> target)
+	{
+		m_target = target;
+	}
+
 	EnemyType GetEnemyType() const { return m_enemyType; }
+
+	ObjctType GetObjectType() const { return m_objectType; }
 
 	virtual void onHit(){};
 
@@ -118,4 +133,8 @@ protected:
 
 	// エネミータイプ情報
 	EnemyType m_enemyType = NullEnemy;
+
+	ObjctType m_objectType = ObjctType::Null;
+
+	std::weak_ptr<KdGameObject> m_target;
 };
