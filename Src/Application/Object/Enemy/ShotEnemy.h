@@ -241,5 +241,10 @@ private:
 	NowMatelialType		m_matelialType	= NowMatelialType::Idle;	// 現在のマテリアルタイプ
 
 	AnimationInfo		m_animeInfo;
-	float				m_animespeed	= 0.0f;		
+	float				m_animespeed	= 0.0f;	
+
+	int FlashTimer = 0;         // 点滅用フレームカウンター
+	bool Visible = true;        // 現在表示状態か
+
+	bool FrashFlg = false;	// フラッシュフラグ
 };

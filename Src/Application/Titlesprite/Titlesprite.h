@@ -15,6 +15,8 @@ public:
 private:
 
 	KdTexture m_Tex;
+	KdTexture m_Tex2;
+	KdTexture m_Tex3;
 
 
 };

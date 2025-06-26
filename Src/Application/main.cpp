@@ -192,7 +192,7 @@ bool Application::Init(int w, int h)
 	//===================================================================
 	// imgui初期化
 	//===================================================================
-	m_debugGui.GuiInit();
+	//m_debugGui.GuiInit();
 
 	//===================================================================
 	// シェーダー初期化
@@ -306,7 +306,7 @@ void Application::Execute()
 		//=========================================
 
 				//タイトルバーにFPSを表示
-		std::string titleBar = "さくひんめい FPS:" + std::to_string(m_fpsController.m_nowfps);
+		std::string titleBar = "ピクセル斬影伝 FPS:" + std::to_string(m_fpsController.m_nowfps);
 		SetWindowTextA(m_window.GetWndHandle(), titleBar.c_str());
 
 		m_fpsController.Update();

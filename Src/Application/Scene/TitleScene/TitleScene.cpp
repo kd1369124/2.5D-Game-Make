@@ -9,6 +9,7 @@ void TitleScene::Event()
 		(
 			SceneManager::SceneType::Game
 		);
+		KdAudioManager::Instance().StopAllSound();
 	}
 }
 
@@ -19,5 +20,15 @@ void TitleScene::Init()
 
 	titleSprite->Init();
 	m_objList.push_back(titleSprite);
+
+	// BGM再生
+	if (!m_bgm || !m_bgm->IsPlaying())
+	{
+		m_bgm = KdAudioManager::Instance().Play("Asset/Sounds/title.WAV", true);
+		if (m_bgm)
+		{
+			m_bgm->SetVolume(0.1f);
+		}
+	}
 
 }

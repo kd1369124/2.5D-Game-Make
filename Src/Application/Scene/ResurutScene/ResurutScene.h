@@ -14,4 +14,6 @@ private:
 	void Event() override;
 	void Init()  override;
 
+	std::shared_ptr<KdSoundInstance> m_bgm;
+
 };
