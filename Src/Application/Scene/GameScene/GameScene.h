@@ -25,4 +25,6 @@ private:
 	std::shared_ptr<Ground>ground;
 	std::shared_ptr<NomalBack>nBack;
 
+	int EnemyCount;
+
 };

@@ -3,6 +3,7 @@
 #include "BaseScene/BaseScene.h"
 #include "GameScene/GameScene.h"
 #include "TitleScene/TitleScene.h"
+#include "ResurutScene/ResurutScene.h"
 
 void SceneManager::PreUpdate()
 {
@@ -65,6 +66,9 @@ void SceneManager::ChangeScene(SceneType _sceneType)
 		break;
 	case SceneType::Game:
 		m_currentScene = std::make_shared<GameScene>();
+		break;
+	case SceneType::Reslt:
+		m_currentScene = std::make_shared<ResurutScene>();
 		break;
 	}
 

@@ -11,7 +11,7 @@ public :
 	{
 		Title,
 		Game,
-		Select,
+		Reslt
 
 	};
 

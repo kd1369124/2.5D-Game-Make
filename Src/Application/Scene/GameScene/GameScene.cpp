@@ -6,8 +6,10 @@
 #include"../../Object/Enemy/Enemy.h"
 #include"../../Load/JsonLoad.h"
 #include"../../Object/Player/TestPlayer.h"
+#include"../../Object/Player/PlayerUI.h"
 #include"../../Object/Enemy/ShotEnemy.h"
 #include"../../../Framework/GameObject/KdGameObject.h"
+
 
 void GameScene::Event()
 {
@@ -25,7 +27,7 @@ void GameScene::Event()
 			Math::Matrix _RotationZ =
 				Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(0));
 
-			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,1.5  , -3 + testplayer->GetPos().z};
+			Math::Vector3 camPos = { 1 + testplayer->GetPos().x ,1.5  , -4 + testplayer->GetPos().z};
 			Math::Matrix _Trans =
 				Math::Matrix::CreateTranslation(camPos);
 
@@ -39,17 +41,25 @@ void GameScene::Event()
 		
 
 	}
-
-
-
 	
-	if (GetAsyncKeyState('T') & 0x8000)
+	for (const auto& obj : m_objList)
+	{
+		if (obj->GetObjectType() == KdGameObject::ObjctType::Enemy)
+		{
+			if (obj->GetAlive() == false)
+			{
+				EnemyCount -= 1;
+			}
+		}
+	}
+	if (EnemyCount == 0)
 	{
 		SceneManager::Instance().SetNextScene
 		(
-			SceneManager::SceneType::Title
+			SceneManager::SceneType::Reslt
 		);
 	}
+
 }
 
 void GameScene::Init()
@@ -72,7 +82,7 @@ void GameScene::Init()
 	m_objList.push_back(nBack);
 	//=================================================
 	
-
+	EnemyCount = 2;
 
 	//===============ノード読み込み=====================
 	//auto nodes = JsonNodeLoader::LoadNodes("Asset/JsonData/nodes2.json"); 
@@ -152,7 +162,6 @@ void GameScene::Init()
 				}
 			}
 		}
-	int a = 0;
 	
 	for (const auto& obj : m_objList)
 	{
@@ -185,5 +194,9 @@ void GameScene::Init()
 
 	//=================================================
 
+	std::shared_ptr<PlayerUI> playerUI = std::make_shared<PlayerUI>();
+	playerUI->Init();
+	playerUI->SetPlayer(testplayer);
+	m_objList.push_back(playerUI);
 	
 }

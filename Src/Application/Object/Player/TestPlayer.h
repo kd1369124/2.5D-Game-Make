@@ -23,6 +23,12 @@ public:
 
 	Math::Vector3 GetPos() const { return m_pos; }
 
+	void onHit()override;
+
+	void SetHp(int hp) { m_hp = std::clamp(hp, 0, m_maxHp); }
+	int GetHp()const { return m_hp; }
+	int GetMaxHp()const { return m_maxHp; }
+
 private:
 
 	std::shared_ptr<KdSquarePolygon> m_polygon;
@@ -50,5 +56,19 @@ private:
 	bool ZKeyFlg;
 	bool ZmoveminusFlg = NULL;	
 	bool m_direction = true; // true:右, false:左
+
+	float m_HitArea = 0.0f; // 攻撃判定のエリア
+
+	bool DamageFlg = false;	// ダメージフラグ
+
+	bool DamageEndFlg = false;	// ダメージ終了フラグ
+
+	bool FrashFlg = false;	// フラッシュフラグ
+
+	int								m_hp = 500;
+	int								m_maxHp = 500;
+
+	int FlashTimer = 0;         // 点滅用フレームカウンター
+	bool Visible = true;        // 現在表示状態か
 
 };

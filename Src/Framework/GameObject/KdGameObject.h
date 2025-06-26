@@ -81,7 +81,9 @@ public:
 
 	virtual void onHit(){}
 
-	virtual void SetExpired(bool flg){}
+	virtual void SetExpired(bool flg) { m_isExpired = flg; }
+
+	virtual bool GetAlive() { return Alive; }
 
 	// 拡大率を変更する関数
 	void SetScale(float scalar);
@@ -137,4 +139,6 @@ protected:
 	ObjctType m_objectType = ObjctType::Null;
 
 	std::weak_ptr<KdGameObject> m_target;
+
+	bool Alive = false;
 };

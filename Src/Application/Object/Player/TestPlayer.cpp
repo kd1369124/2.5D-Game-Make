@@ -28,6 +28,7 @@ void TestPlayer::Init()
 	ZmovepulsFlg = NULL;
 	m_direction = true; // true:右, false:左
 
+	DamageFlg = false;						// ダメージフラグを初期化
 
 	//移動関係Flgをfalseで初期化
 	{
@@ -50,11 +51,36 @@ void TestPlayer::Init()
 	//重力を0.05fで初期化
 	m_gravity = 0.05f;
 
+	m_HitArea = 0.7f; // 攻撃判定のエリアを0.3fで初期化
+
 	//アニメーション初期化
 	m_animeInfo.start = 0.0f;	//開始コマを0.0fで初期化
 	m_animeInfo.end = 0.0f;		//終了コマを0.0fで初期化
 	m_animeInfo.count = 0.0f;	//現在のコマ数カウントを0.0fで初期化
 	m_animeInfo.speed = 0.0f;	//アニメーション速度を0.0fで初期化
+	m_pCollider = std::make_unique<KdCollider>();
+
+
+	m_pCollider->RegisterCollisionShape(
+		"PlayerCollision",
+		Math::Vector3(0, 0.5, 0),							// 球の中心座標（原点からの位置）
+		m_HitArea,										// 球の半径
+		KdCollider::TypeDamage								// 当たり判定のタイプ
+	);
+
+	Alive = true;
+
+	m_hp = 500; // HPを500で初期化
+	m_maxHp = 500; // 最大HPを500で初期化
+
+	FrashFlg = false;	// フラッシュフラグを初期化
+
+	DamageEndFlg = false;	// ダメージ終了フラグを初期化
+
+	DamageFlg = false;	// ダメージフラグを初期化
+
+	FlashTimer = 0;         // 点滅用フレームカウンターを初期化
+	m_objectType = ObjctType::Player;
 }
 
 void TestPlayer::Update()
@@ -561,17 +587,7 @@ void TestPlayer::Update()
 			m_animeInfo.count = 2.0f;
 		}
 	}
-	//攻撃中
-	if (AtkFlg)
-	{
-		//コマ数のカウントが3コマ以上なら
-		if (animeCnt >= 3)
-		{
-			animeCnt = 3;			//画像を3コマ目で固定
-			m_animeInfo.count = 3;	//コマ数を3に固定
-			AtkFlg = false;			//攻撃Flgをfalseにする
-		}
-	}
+
 	//攻撃中
 	if (GuardFlg)
 	{
@@ -594,20 +610,6 @@ void TestPlayer::Update()
 		m_speed = 0.06;
 	}
 	m_dir.Normalize();
-	if (AtkFlg)
-	{
-		// 攻撃オブジェクトを出現させる座標を確定させる
-		Math::Vector3 attackPos = {};
-		attackPos = m_pos;			// プレイヤーの座標を基準にする
-		attackPos += m_dir * 0.1;	// 攻撃方向に0.4だけずらす
-		// 攻撃オブジェクトを作成
-		std::shared_ptr<Attack> attack;
-		attack = std::make_shared<Attack>();
-		attack->Init();									// 初期化
-		attack->SetDirection(m_direction);				// 向きをセット
-		attack->SetPos(attackPos);						// 座標をセット
-		SceneManager::Instance().AddObject(attack);		// シーンに追加
-	}
 
 	//重力処理
 	m_pos.y -= m_gravity;
@@ -641,10 +643,64 @@ void TestPlayer::Update()
 			m_dir += {0, 0, -1};//Zキーを押しているときは前に進む
 		}
 	}
-	
+
+	static int counat = 0;
+
+	if (counat >= 3)
+	{
+		FrashFlg = false; //3回点滅したら点滅を終了
+		DamageEndFlg = false; //ダメージ終了フラグをtrueにする
+		counat = 0; //カウントをリセット
+	}
+
+	// 点滅処理
+	if (FrashFlg)
+	{
+		FlashTimer++;
+		DamageEndFlg = true; //ダメージ終了フラグをtrueにする
+		// 10フレームごとに表示/非表示を切り替え
+		if (FlashTimer % 10 == 0)
+		{
+			Visible = !Visible;
+			counat++;
+		}
+	}
+	else
+	{
+		// 通常表示
+		Visible = true;
+		FlashTimer = 0;
+	}
 
 	
 	m_pos += m_dir * m_speed;
+
+	//攻撃中
+	if (AtkFlg)
+	{
+
+		//コマ数のカウントが3コマ以上なら
+		if (animeCnt >= 3)
+		{
+
+			// 攻撃オブジェクトを出現させる座標を確定させる
+			Math::Vector3 attackPos = {};
+			attackPos = m_pos;			// プレイヤーの座標を基準にする	// 攻撃方向に0.4だけずらす
+			// 攻撃オブジェクトを作成
+			std::shared_ptr<Attack> attack;
+			attack = std::make_shared<Attack>();
+			attack->Init();									// 初期化
+			attack->SetDirection(m_direction,ZmovepulsFlg);				// 向きをセット
+			attack->SetPos(attackPos);						// 座標をセット
+			SceneManager::Instance().AddObject(attack);		// シーンに追加
+			
+				
+			
+			animeCnt = 3;			//画像を3コマ目で固定
+			m_animeInfo.count = 3;	//コマ数を3に固定
+			AtkFlg = false;			//攻撃Flgをfalseにする
+		}
+	}
 	
 	Math::Matrix RotY = Math::Matrix::CreateRotationY(rotY);
 
@@ -681,7 +737,7 @@ void TestPlayer::PostUpdate()
 	rayInfo.m_type = KdCollider::TypeGround;
 
 	//デバック
-	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range);
+	//m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range);
 
 	//レイに当たったオブジェクト情報を格納するリスト
 	std::list<KdCollider::CollisionResult> retRayList;
@@ -729,7 +785,7 @@ void TestPlayer::PostUpdate()
 	spherInfo.m_type = KdCollider::TypeGround;
 
 	//デバック
-	m_pDebugWire->AddDebugSphere(spherInfo.m_sphere.Center, spherInfo.m_sphere.Radius);
+	//m_pDebugWire->AddDebugSphere(spherInfo.m_sphere.Center, spherInfo.m_sphere.Radius);
 
 	//球にあたったオブジェクト情報を格納するリスト
 	std::list<KdCollider::CollisionResult> retSphereList;
@@ -766,10 +822,28 @@ void TestPlayer::PostUpdate()
 
 void TestPlayer::DrawLit()
 {
-	KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_polygon, m_mWorld);
+	if(Visible)KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_polygon, m_mWorld);
+	
 }
 
 void TestPlayer::GenerateDepthMapFromLight()
 {
 	KdShaderManager::Instance().m_StandardShader.DrawPolygon(*m_polygon, m_mWorld);
 }
+
+void TestPlayer::onHit()
+{
+	if (DamageEndFlg || GuardFlg)return;	// ダメージ終了フラグが立っている場合は何もしない
+
+	m_hp -= 30;
+	if (m_hp <= 0)
+	{
+		Alive = false;					// HPが0以下ならAliveをfalseにする
+	}
+	else
+	{
+		DamageFlg = true;		// ダメージフラグを立てる
+		FrashFlg = true;		// 点滅フラグを立てる
+	}
+}
+

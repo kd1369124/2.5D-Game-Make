@@ -106,6 +106,9 @@
     <Filter Include="Src\Application\Titlesprite">
       <UniqueIdentifier>{b0e73831-641a-457c-be30-702263b104d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Scene\ResrutScene">
+      <UniqueIdentifier>{06db9c4d-6cc6-46f5-ae9f-3ecd67a8e4a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -313,6 +316,18 @@
     <ClInclude Include="Src\Application\Titlesprite\Titlesprite.h">
       <Filter>Src\Application\Titlesprite</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Object\Attack\EnemyAttack.h">
+      <Filter>Src\Application\Object\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\ResurutScene\ResurutScene.h">
+      <Filter>Src\Application\Scene\ResrutScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Player\PlayerUI.h">
+      <Filter>Src\Application\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\ResurutScene\Resurut.h">
+      <Filter>Src\Application\Scene\ResrutScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -486,6 +501,18 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Titlesprite\Titlesprite.cpp">
       <Filter>Src\Application\Titlesprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Attack\EnemyAttack.cpp">
+      <Filter>Src\Application\Object\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\ResurutScene\ResurutScene.cpp">
+      <Filter>Src\Application\Scene\ResrutScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Player\PlayerUI.cpp">
+      <Filter>Src\Application\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\ResurutScene\Resurut.cpp">
+      <Filter>Src\Application\Scene\ResrutScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

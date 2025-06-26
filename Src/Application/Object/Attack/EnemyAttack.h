@@ -1,33 +1,29 @@
 ﻿#pragma once
-class Attack : public KdGameObject
+class EnemyAttack : public KdGameObject
 {
 public:
-	Attack(){}
-	~Attack(){}
+	EnemyAttack(){}
+	~EnemyAttack(){}
 
 	void Init() override;
+	
 	void Update() override;
-	void PostUpdate() override;
 
+	void onHit() override;
 	void SetPos(const Math::Vector3& pos) override
 	{
 		m_pos = pos;
 	}
 
-	void onHit()override;
-
-	void SetDirection(bool direction , bool directionZ)
+	void SetDirection(bool direction, bool directionZ = NULL)
 	{
 		m_direction = direction;
 		m_directionZ = directionZ;
-	}  
-
-	
+	}
 
 private:
 
 	Math::Vector3 m_pos = {};
-	std::shared_ptr<KdSoundInstance> m_bgm;// 攻撃判定のポリゴン
 
 	// 攻撃判定のエリア
 	float m_attackArea = 0.0f;
@@ -36,7 +32,6 @@ private:
 
 	bool m_direction = true;	// true: 右向き, false: 左向き
 	bool m_directionZ = true;	// true: 奥向き, false: 手前向き
-	bool SoundFlg = false; // 音を鳴らすフラグ
+
 
 };
-

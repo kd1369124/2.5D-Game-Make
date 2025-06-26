@@ -24,7 +24,7 @@ void Ground::Init()
 		m_model,					//モデルの形状をセット
 		KdCollider::TypeGround);	//当たり判定の種類
 
-
+	Alive = true;
 }
 
 void Ground::Update()

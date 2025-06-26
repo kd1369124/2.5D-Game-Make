@@ -9,6 +9,7 @@ void NomalBack::Init()
 	//m_mWorld = Math::Matrix::CreateTranslation(0, 0, 100);
 	m_mWorld = Math::Matrix::CreateTranslation
 	(Math::Vector3(0, 0, 100));
+	Alive = true;
 }
 
 void NomalBack::DrawUnLit()
