@@ -475,12 +475,15 @@ void TestPlayer::Update()
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	//ジャンプの処理　ここまで
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+	
+
+
 
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	//攻撃の処理　ここから
 	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 		//左クリックを押したとき
-	if (((GetAsyncKeyState(VK_LBUTTON) & 0x8000) || (GetAsyncKeyState('U') & 0x8000)) && !KeyFlg)
+	if (((GetAsyncKeyState('L') & 0x8000) || (GetAsyncKeyState('U') & 0x8000)) && !KeyFlg)
 	{
 		KeyFlg = true;
 		//攻撃とジャンプのフラグがfalseなら
@@ -490,7 +493,7 @@ void TestPlayer::Update()
 			AtkFlg = true;			//攻撃Flgをtrueにする
 		}
 	}
-	if (!((GetAsyncKeyState(VK_LBUTTON) & 0x8000) || (GetAsyncKeyState('U'))))
+	if (!((GetAsyncKeyState('L') & 0x8000) || (GetAsyncKeyState('U'))))
 	{
 		KeyFlg = false;
 	}
